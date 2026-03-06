@@ -53,7 +53,7 @@ const protect = asyncHandler(async (req, res, next) => {
 const authorize = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.userRole)) {
-            throw ApiError.forbidden('You do not have permission to perform this action.');
+            return next(ApiError.forbidden('You do not have permission to perform this action.'));
         }
         next();
     };

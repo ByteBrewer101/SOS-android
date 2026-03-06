@@ -84,12 +84,11 @@ const volunteerSchema = new mongoose.Schema(
 );
 
 // Hash password and encrypt Aadhaar before saving
-volunteerSchema.pre('save', async function (next) {
+volunteerSchema.pre('save', async function () {
     if (this.isModified('password')) {
         const salt = await bcrypt.genSalt(12);
         this.password = await bcrypt.hash(this.password, salt);
     }
-    next();
 });
 
 // Compare entered password

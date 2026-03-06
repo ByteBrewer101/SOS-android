@@ -54,11 +54,10 @@ const sosLogSchema = new mongoose.Schema(
 );
 
 // Generate Google Maps link before saving
-sosLogSchema.pre('save', function (next) {
+sosLogSchema.pre('save', function () {
     if (this.latitude && this.longitude) {
         this.locationLink = `https://www.google.com/maps?q=${this.latitude},${this.longitude}`;
     }
-    next();
 });
 
 // Index for efficient queries
