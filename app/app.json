@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "SOS - Mental Health",
+    "slug": "sos-mental-health",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0A0A0F"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.sos.mentalhealth",
+      "infoPlist": {
+        "NSContactsUsageDescription": "We need access to send SMS to your emergency contact."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0A0A0F"
+      },
+      "package": "com.sos.mentalhealth",
+      "permissions": [
+        "android.permission.SEND_SMS"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a457fc9c-f30e-4a19-b03a-51f94ca8987f"
+      }
+    }
+  }
+}
