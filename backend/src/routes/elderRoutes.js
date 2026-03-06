@@ -85,4 +85,48 @@ router.put('/profile', protect, authorize('elder'), elderProfileUpdateRules, val
  */
 router.put('/device-token', protect, authorize('elder'), deviceTokenRules, validate, elderController.updateDeviceToken);
 
+/**
+ * @swagger
+ * /elder/volunteers:
+ *   get:
+ *     summary: Get all available verified volunteers
+ *     tags: [Elder]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Volunteers retrieved successfully
+ */
+router.get('/volunteers', protect, authorize('elder'), elderController.getVolunteers);
+
+/**
+ * @swagger
+ * /elder/volunteers:
+ *   post:
+ *     summary: Select matching volunteers for SOS alerts
+ *     tags: [Elder]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - volunteerIds
+ *             properties:
+ *               volunteerIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: ["60d5ecb8b392d700153d3f9f", "60d5ecb8b392d700153d3f9e"]
+ *     responses:
+ *       200:
+ *         description: Volunteers selected successfully
+ *       400:
+ *         description: Validation error or less than 2 volunteers
+ */
+router.post('/volunteers', protect, authorize('elder'), elderController.selectVolunteers);
+
 module.exports = router;

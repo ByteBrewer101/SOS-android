@@ -10,22 +10,23 @@ const sendToDevice = async (deviceToken, title, body, data = {}) => {
 };
 
 /**
- * Broadcast SOS alert to all verified volunteers (stubbed - Firebase disabled)
+ * Broadcast SOS alert to selected verified volunteers (stubbed - Firebase disabled)
  */
-const broadcastSOSAlert = async (sosData) => {
+const broadcastSOSAlert = async (selectedVolunteerIds, sosData) => {
     const { elderName, elderPhone, latitude, longitude, locationLink } = sosData;
 
-    // Find all verified volunteers (still useful for counting)
+    // Find verified volunteers from the selected list
     const volunteers = await Volunteer.find({
+        _id: { $in: selectedVolunteerIds },
         isVerified: true,
     }).select('name');
 
     if (volunteers.length === 0) {
-        logger.warn('⚠️  No verified volunteers found');
+        logger.warn('⚠️  No selected verified volunteers found');
         return { notifiedCount: 0, volunteers: [] };
     }
 
-    logger.info(`📢 [STUB] Would broadcast SOS to ${volunteers.length} volunteers`);
+    logger.info(`📢 [STUB] Would broadcast SOS to ${volunteers.length} selected volunteers`);
     logger.info(`📢 [STUB] Elder: ${elderName} (${elderPhone}) at ${latitude}, ${longitude}`);
     logger.info(`📢 [STUB] Location: ${locationLink}`);
 

@@ -36,6 +36,10 @@ const elderSchema = new mongoose.Schema(
             type: String,
             default: null,
         },
+        selectedVolunteers: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Volunteer',
+        }],
         password: {
             type: String,
             required: [true, 'Password is required'],

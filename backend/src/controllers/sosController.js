@@ -46,20 +46,23 @@ const triggerSOS = asyncHandler(async (req, res) => {
     );
     logger.info(`📱 SMS alert sent to emergency contact: ${elder.emergencyContactNumber}`);
 
-    // 3. Send push notifications to all verified volunteers
-    const notifResult = await notificationService.broadcastSOSAlert({
-        elderName: elder.name,
-        elderPhone: elder.phone,
-        latitude,
-        longitude,
-        locationLink,
-    });
+    // 3. Send push notifications to selected verified volunteers
+    const notifResult = await notificationService.broadcastSOSAlert(
+        elder.selectedVolunteers,
+        {
+            elderName: elder.name,
+            elderPhone: elder.phone,
+            latitude,
+            longitude,
+            locationLink,
+        }
+    );
 
     // Update the SOS log with notification count
     sosLog.notifiedVolunteers = notifResult.notifiedCount || 0;
     await sosLog.save();
 
-    logger.info(`📢 ${notifResult.notifiedCount || 0} volunteers notified`);
+    logger.info(`📢 ${notifResult.notifiedCount || 0} selected volunteers notified`);
 
     return ApiResponse.success(res, {
         sosId: sosLog._id,
