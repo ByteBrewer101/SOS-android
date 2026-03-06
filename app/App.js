@@ -1,59 +1,91 @@
-import React, { useState, useEffect } from 'react';
+/**
+ * SOS Emergency Alert — Main App Entry
+ * Navigation setup with AuthContext
+ */
+import React from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import SetupScreen from './src/screens/SetupScreen';
-import SOSScreen from './src/screens/SOSScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { AuthProvider, useAuth } from './src/context/AuthContext';
 
-const STORAGE_KEY = '@sos_emergency_contact';
+// Screens
+import RoleSelectScreen from './src/screens/RoleSelectScreen';
+import LoginScreen from './src/screens/LoginScreen';
+import RegisterElderScreen from './src/screens/RegisterElderScreen';
+import RegisterVolunteerScreen from './src/screens/RegisterVolunteerScreen';
+import ElderHomeScreen from './src/screens/ElderHomeScreen';
+import VolunteerHomeScreen from './src/screens/VolunteerHomeScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
 
-export default function App() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [contactNumber, setContactNumber] = useState(null);
+const Stack = createNativeStackNavigator();
 
-  useEffect(() => {
-    loadContact();
-  }, []);
+const screenOptions = {
+  headerShown: false,
+  contentStyle: { backgroundColor: '#0A0A0F' },
+  animation: 'slide_from_right',
+};
 
-  const loadContact = async () => {
-    try {
-      const saved = await AsyncStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        setContactNumber(saved);
-      }
-    } catch (error) {
-      console.log('Error loading contact:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+function AuthStack() {
+  return (
+    <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen name="RoleSelect" component={RoleSelectScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="RegisterElder" component={RegisterElderScreen} />
+      <Stack.Screen name="RegisterVolunteer" component={RegisterVolunteerScreen} />
+    </Stack.Navigator>
+  );
+}
 
-  const handleSetupComplete = (number) => {
-    setContactNumber(number);
-  };
+function ElderStack() {
+  return (
+    <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen name="ElderHome" component={ElderHomeScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+    </Stack.Navigator>
+  );
+}
 
-  const handleReset = () => {
-    setContactNumber(null);
-  };
+function VolunteerStack() {
+  return (
+    <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen name="VolunteerHome" component={VolunteerHomeScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function AppNavigator() {
+  const { isAuthenticated, isLoading, role } = useAuth();
 
   if (isLoading) {
     return (
       <View style={styles.loading}>
         <StatusBar style="light" />
-        <ActivityIndicator size="large" color="#DC2626" />
+        <ActivityIndicator size="large" color="#E53E3E" />
       </View>
     );
   }
 
   return (
-    <>
+    <NavigationContainer>
       <StatusBar style="light" />
-      {contactNumber ? (
-        <SOSScreen contactNumber={contactNumber} onReset={handleReset} />
+      {!isAuthenticated ? (
+        <AuthStack />
+      ) : role === 'elder' ? (
+        <ElderStack />
       ) : (
-        <SetupScreen onComplete={handleSetupComplete} />
+        <VolunteerStack />
       )}
-    </>
+    </NavigationContainer>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppNavigator />
+    </AuthProvider>
   );
 }
 

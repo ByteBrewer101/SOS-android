@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "SOS - Mental Health",
-    "slug": "sos-mental-health",
+    "name": "SOS Emergency Alert",
+    "slug": "sos-emergency-alert",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,9 +14,10 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.sos.mentalhealth",
+      "bundleIdentifier": "com.sos.emergency",
       "infoPlist": {
-        "NSContactsUsageDescription": "We need access to send SMS to your emergency contact."
+        "NSLocationWhenInUseUsageDescription": "We need your location to send it with your SOS alert so emergency contacts and volunteers can find you.",
+        "NSLocationAlwaysUsageDescription": "We need your location to send it with your SOS alert."
       }
     },
     "android": {
@@ -24,9 +25,11 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0A0A0F"
       },
-      "package": "com.sos.mentalhealth",
+      "package": "com.sos.emergency",
       "permissions": [
-        "android.permission.SEND_SMS"
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.CALL_PHONE"
       ]
     },
     "web": {
@@ -36,6 +39,14 @@
       "eas": {
         "projectId": "a457fc9c-f30e-4a19-b03a-51f94ca8987f"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow SOS Emergency to access your location for sending your position in SOS alerts."
+        }
+      ]
+    ]
   }
 }
