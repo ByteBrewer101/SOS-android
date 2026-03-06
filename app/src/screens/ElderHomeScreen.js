@@ -14,6 +14,7 @@ import {
     Dimensions,
     Linking,
 } from 'react-native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
 import * as Haptics from 'expo-haptics';
@@ -26,6 +27,7 @@ const SOS_BUTTON_SIZE = Math.min(width * 0.55, 220);
 
 export default function ElderHomeScreen({ navigation }) {
     const { user, logout } = useAuth();
+    const isFocused = useIsFocused();
     const [sosActive, setSOSActive] = useState(false);
     const [loading, setLoading] = useState(false);
     const [logs, setLogs] = useState([]);
@@ -36,7 +38,19 @@ export default function ElderHomeScreen({ navigation }) {
     const glowAnim = useRef(new Animated.Value(0.3)).current;
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
+    // Check volunteer selection status on focus
+    useFocusEffect(
+        useCallback(() => {
+            if (!user?.selectedVolunteers || user.selectedVolunteers.length < 2) {
+                // Redirection must be to VolunteerSelection screen
+                navigation.replace('VolunteerSelection');
+            }
+        }, [user, navigation])
+    );
+
     useEffect(() => {
+        // Only animate if staying on screen
+        if (!user?.selectedVolunteers || user.selectedVolunteers.length < 2) return;
         // Entry animation
         Animated.timing(fadeAnim, {
             toValue: 1,
@@ -285,6 +299,24 @@ export default function ElderHomeScreen({ navigation }) {
                     </View>
                 </TouchableOpacity>
             )}
+
+            {/* Emergency Volunteers Info */}
+            <TouchableOpacity
+                style={styles.contactCard}
+                activeOpacity={0.7}
+                onPress={() => navigation.navigate('VolunteerSelection')}
+            >
+                <View style={styles.contactInfo}>
+                    <Text style={styles.contactLabel}>Emergency Volunteers</Text>
+                    <Text style={styles.contactName}>
+                        {user?.selectedVolunteers?.length || 0} Volunteers Selected
+                    </Text>
+                    <Text style={styles.contactPhone}>Tap to manage your selections</Text>
+                </View>
+                <View style={[styles.callButton, { backgroundColor: COLORS.bgInput }]}>
+                    <Text style={styles.callEmoji}>🤝</Text>
+                </View>
+            </TouchableOpacity>
 
             {/* History Header */}
             <Text style={styles.sectionTitle}>Recent SOS Alerts</Text>

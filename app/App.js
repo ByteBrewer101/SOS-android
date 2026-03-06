@@ -17,6 +17,7 @@ import RegisterVolunteerScreen from './src/screens/RegisterVolunteerScreen';
 import ElderHomeScreen from './src/screens/ElderHomeScreen';
 import VolunteerHomeScreen from './src/screens/VolunteerHomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+import VolunteerSelectionScreen from './src/screens/VolunteerSelectionScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +42,7 @@ function ElderStack() {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="ElderHome" component={ElderHomeScreen} />
+      <Stack.Screen name="VolunteerSelection" component={VolunteerSelectionScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
     </Stack.Navigator>
   );

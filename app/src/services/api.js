@@ -113,6 +113,17 @@ export const updateElderProfile = async (body) => {
     });
 };
 
+export const getAvailableVolunteers = async () => {
+    return apiRequest('/elder/volunteers');
+};
+
+export const selectVolunteers = async (volunteerIds) => {
+    return apiRequest('/elder/volunteers', {
+        method: 'POST',
+        body: JSON.stringify({ volunteerIds }),
+    });
+};
+
 // ─── Volunteer APIs ────────────────────────────────────────────────────
 
 export const getVolunteerProfile = async () => {
