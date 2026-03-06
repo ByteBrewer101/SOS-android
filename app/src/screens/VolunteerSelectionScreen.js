@@ -104,7 +104,6 @@ export default function VolunteerSelectionScreen({ navigation }) {
                 style={[styles.volunteerCard, isSelected && styles.selectedCard]}
             >
                 <View style={styles.cardLeft}>
-                    <Text style={styles.volunteerEmoji}>🤝</Text>
                     <View style={styles.volunteerInfo}>
                         <Text style={styles.volunteerName}>{item.name}</Text>
                     </View>
@@ -118,7 +117,6 @@ export default function VolunteerSelectionScreen({ navigation }) {
 
     const ListHeader = () => (
         <View style={styles.header}>
-            <Text style={styles.emoji}>🛡️</Text>
             <Text style={styles.title}>Select Volunteers</Text>
             <Text style={styles.subtitle}>
                 Choose at least 2 volunteers who will be notified when you trigger an SOS.
@@ -200,10 +198,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: SPACING.xxxl,
     },
-    emoji: {
-        fontSize: 56,
-        marginBottom: SPACING.md,
-    },
     title: {
         fontSize: FONTS.sizes.xl,
         fontWeight: FONTS.weights.bold,
@@ -250,10 +244,6 @@ const styles = StyleSheet.create({
     cardLeft: {
         flexDirection: 'row',
         alignItems: 'center',
-    },
-    volunteerEmoji: {
-        fontSize: 32,
-        marginRight: SPACING.md,
     },
     volunteerInfo: {},
     volunteerName: {

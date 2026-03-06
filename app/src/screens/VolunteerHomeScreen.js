@@ -102,7 +102,7 @@ export default function VolunteerHomeScreen({ navigation }) {
                 <View style={styles.alertHeader}>
                     <View style={styles.alertBadge}>
                         <Text style={styles.alertBadgeText}>
-                            {isRecent ? '🔴 ACTIVE' : '⏱️ PAST'}
+                            {isRecent ? 'ACTIVE' : 'PAST'}
                         </Text>
                     </View>
                     <Text style={styles.alertTime}>{formatTime(item.createdAt)}</Text>
@@ -110,7 +110,6 @@ export default function VolunteerHomeScreen({ navigation }) {
 
                 {/* Elder Info */}
                 <View style={styles.alertBody}>
-                    <Text style={styles.alertEmoji}>🚨</Text>
                     <View style={styles.alertInfo}>
                         <Text style={styles.alertName}>{item.elderName}</Text>
                         <Text style={styles.alertPhone}>+91 {item.elderPhone}</Text>
@@ -120,7 +119,7 @@ export default function VolunteerHomeScreen({ navigation }) {
                 {/* Location */}
                 <View style={styles.alertLocation}>
                     <Text style={styles.locationText}>
-                        📍 {item.latitude?.toFixed(4)}, {item.longitude?.toFixed(4)}
+                        Loc: {item.latitude?.toFixed(4)}, {item.longitude?.toFixed(4)}
                     </Text>
                 </View>
 
@@ -137,7 +136,6 @@ export default function VolunteerHomeScreen({ navigation }) {
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
                         >
-                            <Text style={styles.actionEmoji}>📞</Text>
                             <Text style={styles.actionText}>Call</Text>
                         </LinearGradient>
                     </TouchableOpacity>
@@ -157,7 +155,6 @@ export default function VolunteerHomeScreen({ navigation }) {
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
                         >
-                            <Text style={styles.actionEmoji}>🗺️</Text>
                             <Text style={styles.actionText}>Map</Text>
                         </LinearGradient>
                     </TouchableOpacity>
@@ -180,7 +177,7 @@ export default function VolunteerHomeScreen({ navigation }) {
                     style={styles.profileButton}
                     onPress={() => navigation.navigate('Profile')}
                 >
-                    <Text style={styles.profileEmoji}>👤</Text>
+                    <Text style={styles.profileText}>Edit</Text>
                 </TouchableOpacity>
             </View>
 
@@ -189,7 +186,7 @@ export default function VolunteerHomeScreen({ navigation }) {
                 <View style={styles.statusRow}>
                     <View style={styles.statusItem}>
                         <Text style={styles.statusValue}>
-                            {user?.isVerified ? '✅' : '⏳'}
+                            {user?.isVerified ? 'Yes' : 'No'}
                         </Text>
                         <Text style={styles.statusLabel}>
                             {user?.isVerified ? 'Verified' : 'Pending'}
@@ -220,7 +217,6 @@ export default function VolunteerHomeScreen({ navigation }) {
 
     const ListEmpty = () => (
         <View style={styles.emptyContainer}>
-            <Text style={styles.emptyEmoji}>🛡️</Text>
             <Text style={styles.emptyText}>No alerts yet</Text>
             <Text style={styles.emptySubtext}>
                 SOS alerts from elders will appear here
@@ -288,7 +284,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: COLORS.border,
     },
-    profileEmoji: { fontSize: 24 },
+    profileText: { fontSize: FONTS.sizes.xs, color: COLORS.textPrimary, fontWeight: FONTS.weights.bold, textTransform: 'uppercase' },
     // Status Card
     statusCard: {
         backgroundColor: COLORS.bgCard,
@@ -376,7 +372,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: SPACING.md,
     },
-    alertEmoji: { fontSize: 32, marginRight: SPACING.md },
     alertInfo: {},
     alertName: {
         fontSize: FONTS.sizes.lg,
@@ -413,7 +408,6 @@ const styles = StyleSheet.create({
         borderRadius: RADIUS.md,
         gap: SPACING.sm,
     },
-    actionEmoji: { fontSize: 18 },
     actionText: {
         fontSize: FONTS.sizes.md,
         fontWeight: FONTS.weights.bold,
@@ -424,7 +418,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingVertical: SPACING.huge,
     },
-    emptyEmoji: { fontSize: 48, marginBottom: SPACING.md },
     emptyText: {
         fontSize: FONTS.sizes.lg,
         fontWeight: FONTS.weights.semibold,

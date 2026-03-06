@@ -96,7 +96,6 @@ export default function RegisterElderScreen({ navigation }) {
                     <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
                         {/* Header */}
                         <View style={styles.header}>
-                            <Text style={styles.emoji}>👴</Text>
                             <Text style={styles.title}>Elder Registration</Text>
                             <Text style={styles.subtitle}>Create your account</Text>
                         </View>
@@ -232,7 +231,6 @@ const styles = StyleSheet.create({
         marginBottom: SPACING.xxl,
         marginTop: SPACING.xl,
     },
-    emoji: { fontSize: 48, marginBottom: SPACING.sm },
     title: {
         fontSize: FONTS.sizes.xl,
         fontWeight: FONTS.weights.bold,

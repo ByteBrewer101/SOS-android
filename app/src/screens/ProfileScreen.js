@@ -145,8 +145,8 @@ export default function ProfileScreen({ navigation }) {
                             colors={isElder ? COLORS.gradientSOS : COLORS.gradientAccent}
                             style={styles.avatar}
                         >
-                            <Text style={styles.avatarEmoji}>
-                                {isElder ? '👴' : '🤝'}
+                            <Text style={styles.avatarText}>
+                                {isElder ? 'EL' : 'VO'}
                             </Text>
                         </LinearGradient>
                         <Text style={styles.userName}>{user?.name || 'User'}</Text>
@@ -209,12 +209,12 @@ export default function ProfileScreen({ navigation }) {
                                 />
                                 <ProfileField
                                     label="Verification Status"
-                                    value={user?.isVerified ? '✅ Verified' : '⏳ Pending'}
+                                    value={user?.isVerified ? 'Verified' : 'Pending'}
                                     editable={false}
                                 />
                                 <ProfileField
                                     label="Aadhaar Verified"
-                                    value={user?.aadhaarVerified ? '✅ Yes' : '❌ No'}
+                                    value={user?.aadhaarVerified ? 'Yes' : 'No'}
                                     editable={false}
                                 />
                             </>
@@ -263,19 +263,18 @@ export default function ProfileScreen({ navigation }) {
                                     onPress={() => setEditing(true)}
                                 >
                                     <View style={styles.editButton}>
-                                        <Text style={styles.editText}>✏️ Edit Profile</Text>
+                                        <Text style={styles.editText}>Edit Profile</Text>
                                     </View>
                                 </TouchableOpacity>
                             )}
                         </View>
                     )}
 
-                    {/* Logout */}
                     <TouchableOpacity
                         style={styles.logoutButton}
                         onPress={handleLogout}
                     >
-                        <Text style={styles.logoutText}>🚪 Logout</Text>
+                        <Text style={styles.logoutText}>Logout</Text>
                     </TouchableOpacity>
 
                     {/* App Info */}
@@ -346,7 +345,7 @@ const styles = StyleSheet.create({
         marginBottom: SPACING.md,
         ...SHADOWS.card,
     },
-    avatarEmoji: { fontSize: 44 },
+    avatarText: { fontSize: 32, fontWeight: FONTS.weights.bold, color: COLORS.textPrimary },
     userName: {
         fontSize: FONTS.sizes.xl,
         fontWeight: FONTS.weights.bold,

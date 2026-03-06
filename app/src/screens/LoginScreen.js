@@ -85,7 +85,6 @@ export default function LoginScreen({ navigation, route }) {
                     <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
                         {/* Header */}
                         <View style={styles.header}>
-                            <Text style={styles.emoji}>{isElder ? '👴' : '🤝'}</Text>
                             <Text style={styles.title}>
                                 {isElder ? 'Elder Login' : 'Volunteer Login'}
                             </Text>
@@ -128,7 +127,7 @@ export default function LoginScreen({ navigation, route }) {
                                         style={styles.eyeButton}
                                     >
                                         <Text style={styles.eyeText}>
-                                            {showPassword ? '🙈' : '👁️'}
+                                            {showPassword ? 'Hide' : 'Show'}
                                         </Text>
                                     </TouchableOpacity>
                                 </View>
@@ -205,7 +204,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: SPACING.xxxl,
     },
-    emoji: { fontSize: 56, marginBottom: SPACING.md },
     title: {
         fontSize: FONTS.sizes.xxl,
         fontWeight: FONTS.weights.bold,
@@ -253,7 +251,9 @@ const styles = StyleSheet.create({
         padding: SPACING.sm,
     },
     eyeText: {
-        fontSize: 20,
+        fontSize: FONTS.sizes.sm,
+        color: COLORS.textSecondary,
+        fontWeight: FONTS.weights.medium,
     },
     button: {
         height: 56,

@@ -1,50 +1,50 @@
 /**
- * SOS App Design Tokens
- * Senior-friendly: high contrast, large touch targets, clear typography
+ * SOS App Design Tokens - Minimal UI
+ * High contrast, large touch targets, clear typography, no emojis
  */
 
 export const COLORS = {
     // Primary
-    primary: '#E53E3E',
-    primaryDark: '#C53030',
-    primaryLight: '#FC8181',
+    primary: '#D32F2F', // Strong red for SOS
+    primaryDark: '#B71C1C',
+    primaryLight: '#EF5350',
 
-    // Background
-    bg: '#0A0A0F',
-    bgCard: '#141420',
-    bgElevated: '#1A1A2E',
-    bgInput: '#1E1E30',
+    // Background - Minimal dark theme
+    bg: '#121212',
+    bgCard: '#1E1E1E',
+    bgElevated: '#2C2C2C',
+    bgInput: '#2C2C2C',
 
     // Surface
-    surface: '#16213E',
-    surfaceLight: '#1A1A2E',
+    surface: '#1E1E1E',
+    surfaceLight: '#2C2C2C',
 
     // Text
-    textPrimary: '#F7FAFC',
-    textSecondary: '#A0AEC0',
-    textMuted: '#718096',
-    textDanger: '#FC8181',
+    textPrimary: '#FFFFFF',
+    textSecondary: '#B3B3B3',
+    textMuted: '#808080',
+    textDanger: '#EF5350',
 
     // Accent
-    accent: '#4FD1C5',
-    accentDark: '#38B2AC',
+    accent: '#FFFFFF',
+    accentDark: '#E0E0E0',
 
     // Status
-    success: '#48BB78',
-    warning: '#ECC94B',
-    danger: '#FC8181',
-    info: '#63B3ED',
+    success: '#388E3C',
+    warning: '#FBC02D',
+    danger: '#D32F2F',
+    info: '#1976D2',
 
     // Borders
-    border: '#2D3748',
-    borderLight: '#4A5568',
+    border: '#333333',
+    borderLight: '#444444',
 
-    // Gradient pairs
-    gradientPrimary: ['#E53E3E', '#C53030'],
-    gradientDark: ['#1A1A2E', '#0A0A0F'],
-    gradientCard: ['#1E1E30', '#141420'],
-    gradientAccent: ['#4FD1C5', '#38B2AC'],
-    gradientSOS: ['#E53E3E', '#9B2C2C'],
+    // Gradient pairs (simplified to solids for minimal look)
+    gradientPrimary: ['#D32F2F', '#D32F2F'],
+    gradientDark: ['#121212', '#121212'],
+    gradientCard: ['#1E1E1E', '#1E1E1E'],
+    gradientAccent: ['#FFFFFF', '#D6D6D6'],
+    gradientSOS: ['#D32F2F', '#B71C1C'],
 };
 
 export const FONTS = {
@@ -79,33 +79,33 @@ export const SPACING = {
 };
 
 export const RADIUS = {
-    sm: 8,
-    md: 12,
-    lg: 16,
-    xl: 20,
+    sm: 4,
+    md: 8,
+    lg: 12,
+    xl: 16,
     full: 999,
 };
 
 export const SHADOWS = {
     card: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 8,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
     },
     button: {
-        shadowColor: '#E53E3E',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.4,
-        shadowRadius: 12,
-        elevation: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 3,
     },
     glow: {
-        shadowColor: '#E53E3E',
+        shadowColor: '#D32F2F',
         shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.6,
-        shadowRadius: 24,
-        elevation: 16,
+        shadowOpacity: 0.3,
+        shadowRadius: 16,
+        elevation: 8,
     },
 };

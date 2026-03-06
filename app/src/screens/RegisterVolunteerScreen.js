@@ -93,7 +93,6 @@ export default function RegisterVolunteerScreen({ navigation }) {
                     <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
                         {/* Header */}
                         <View style={styles.header}>
-                            <Text style={styles.emoji}>🤝</Text>
                             <Text style={styles.title}>Volunteer Registration</Text>
                             <Text style={styles.subtitle}>Join our network of helpers</Text>
                         </View>
@@ -134,9 +133,8 @@ export default function RegisterVolunteerScreen({ navigation }) {
 
                             {/* Security Notice */}
                             <View style={styles.notice}>
-                                <Text style={styles.noticeIcon}>🔒</Text>
                                 <Text style={styles.noticeText}>
-                                    Your Aadhaar is encrypted and only the last 4 digits are stored visibly.
+                                    🔒 Your Aadhaar is encrypted and only the last 4 digits are stored visibly.
                                 </Text>
                             </View>
 
@@ -223,7 +221,6 @@ const styles = StyleSheet.create({
         marginBottom: SPACING.xxl,
         marginTop: SPACING.xl,
     },
-    emoji: { fontSize: 48, marginBottom: SPACING.sm },
     title: {
         fontSize: FONTS.sizes.xl,
         fontWeight: FONTS.weights.bold,
@@ -278,7 +275,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: COLORS.border,
     },
-    noticeIcon: { fontSize: 16 },
     noticeText: {
         flex: 1,
         fontSize: FONTS.sizes.sm,

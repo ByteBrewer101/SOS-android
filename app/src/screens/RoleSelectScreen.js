@@ -62,7 +62,6 @@ export default function RoleSelectScreen({ navigation }) {
                     { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
                 ]}
             >
-                <Text style={styles.emoji}>🚨</Text>
                 <Text style={styles.title}>SOS Emergency</Text>
                 <Text style={styles.subtitle}>Choose your role to get started</Text>
             </Animated.View>
@@ -81,7 +80,6 @@ export default function RoleSelectScreen({ navigation }) {
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
                         >
-                            <Text style={styles.cardEmoji}>👴</Text>
                             <Text style={styles.cardTitle}>Elder User</Text>
                             <Text style={styles.cardDesc}>
                                 I need emergency help & want to alert my contacts
@@ -105,7 +103,6 @@ export default function RoleSelectScreen({ navigation }) {
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
                         >
-                            <Text style={styles.cardEmoji}>🤝</Text>
                             <Text style={[styles.cardTitle, { color: '#0A0A0F' }]}>
                                 Volunteer
                             </Text>
@@ -142,10 +139,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: SPACING.huge,
     },
-    emoji: {
-        fontSize: 56,
-        marginBottom: SPACING.md,
-    },
     title: {
         fontSize: FONTS.sizes.xxl,
         fontWeight: FONTS.weights.extrabold,
@@ -164,10 +157,6 @@ const styles = StyleSheet.create({
         padding: SPACING.xxl,
         borderRadius: RADIUS.xl,
         ...SHADOWS.card,
-    },
-    cardEmoji: {
-        fontSize: 44,
-        marginBottom: SPACING.md,
     },
     cardTitle: {
         fontSize: FONTS.sizes.xl,
