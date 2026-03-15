@@ -12,11 +12,14 @@ import {
     Dimensions,
     Linking,
     SafeAreaView,
+    Platform,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
 import * as Haptics from 'expo-haptics';
+import * as SMS from 'expo-sms';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../theme';
 import { useAuth } from '../context/AuthContext';
 import { triggerSOS } from '../services/api';
@@ -141,6 +144,20 @@ export default function ElderHomeScreen({ navigation }) {
 
             if (result.ok && result.data.success) {
                 Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+                // Trigger native SMS
+                if (user?.emergencyContactNumber) {
+                    try {
+                        const isAvailable = await SMS.isAvailableAsync();
+                        if (isAvailable) {
+                            const message = `EMERGENCY SOS! I need help immediately! My location: https://maps.google.com/?q=${latitude},${longitude}`;
+                            await SMS.sendSMSAsync([user.emergencyContactNumber], message);
+                        }
+                    } catch (err) {
+                        console.log('SMS trigger error:', err);
+                    }
+                }
+
                 Alert.alert(
                     '✅ SOS Sent!',
                     `Emergency alert sent.\n\nVolunteers notified: ${result.data.data.volunteersNotified}\nLocation shared with emergency contact.`,
@@ -178,6 +195,25 @@ export default function ElderHomeScreen({ navigation }) {
         <LinearGradient colors={COLORS.gradientDark} style={styles.container}>
             <SafeAreaView style={styles.safeArea}>
                 <View style={styles.content}>
+                    {/* Top Menu */}
+                    <View style={styles.topMenu}>
+                        <TouchableOpacity
+                            style={styles.iconButton}
+                            onPress={() => navigation.navigate('VolunteerSelection')}
+                            activeOpacity={0.7}
+                        >
+                            <Ionicons name="people-outline" size={24} color={COLORS.textPrimary} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={styles.iconButton}
+                            onPress={() => navigation.navigate('Profile')}
+                            activeOpacity={0.7}
+                        >
+                            <Ionicons name="person-outline" size={24} color={COLORS.textPrimary} />
+                        </TouchableOpacity>
+                    </View>
+
                     {/* Centered SOS Button */}
                     <View style={styles.center}>
                         <Animated.View style={[styles.glowRing, { opacity: glowAnim }]} />
@@ -236,6 +272,24 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'space-between', // pushes bottom to bottom, but center needs to be centered
         // We'll use a combination: center is flex:1 to take remaining space
+    },
+    topMenu: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        paddingHorizontal: SPACING.xxl,
+        paddingTop: Platform.OS === 'android' ? 40 : SPACING.md, // Add padding for Android SafeAreaView
+        gap: SPACING.md,
+    },
+    iconButton: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: COLORS.bgCard,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: COLORS.border,
+        ...SHADOWS.card,
     },
     center: {
         flex: 1,
