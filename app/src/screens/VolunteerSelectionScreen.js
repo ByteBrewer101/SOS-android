@@ -132,13 +132,13 @@ export default function VolunteerSelectionScreen({ navigation }) {
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={COLORS.primary} />
+                <ActivityIndicator size="large" color={COLORS.accent} />
             </View>
         );
     }
 
     return (
-        <LinearGradient colors={COLORS.gradientDark} style={styles.container}>
+        <View style={styles.container}>
             <Animated.View style={[styles.flex, { opacity: fadeAnim }]}>
                 <FlatList
                     data={volunteers}
@@ -162,7 +162,7 @@ export default function VolunteerSelectionScreen({ navigation }) {
                         disabled={saving || selectedIds.length < 2}
                     >
                         <LinearGradient
-                            colors={selectedIds.length >= 2 ? COLORS.gradientSOS : [COLORS.bgCard, COLORS.bgElevated]}
+                            colors={selectedIds.length >= 2 ? COLORS.gradientAccent : [COLORS.bgElevated, COLORS.bgElevated]}
                             style={styles.saveButton}
                         >
                             {saving ? (
@@ -176,12 +176,12 @@ export default function VolunteerSelectionScreen({ navigation }) {
                     </TouchableOpacity>
                 </View>
             </Animated.View>
-        </LinearGradient>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1 },
+    container: { flex: 1, backgroundColor: COLORS.bg },
     flex: { flex: 1 },
     loadingContainer: {
         flex: 1,
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: FONTS.sizes.xl,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.textPrimary,
+        color: COLORS.navy,
         marginBottom: SPACING.sm,
         textAlign: 'center',
     },
@@ -213,17 +213,15 @@ const styles = StyleSheet.create({
         lineHeight: 22,
     },
     counterBadge: {
-        backgroundColor: COLORS.bgElevated,
+        backgroundColor: COLORS.navy,
         paddingHorizontal: SPACING.lg,
         paddingVertical: SPACING.sm,
         borderRadius: RADIUS.full,
-        borderWidth: 1,
-        borderColor: COLORS.border,
     },
     counterText: {
         fontSize: FONTS.sizes.sm,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.accent,
+        color: '#FFFFFF',
     },
     volunteerCard: {
         flexDirection: 'row',
@@ -238,8 +236,8 @@ const styles = StyleSheet.create({
         ...SHADOWS.card,
     },
     selectedCard: {
-        borderColor: COLORS.primary,
-        backgroundColor: 'rgba(229, 62, 62, 0.1)',
+        borderColor: COLORS.accent,
+        backgroundColor: 'rgba(230, 126, 34, 0.08)',
     },
     cardLeft: {
         flexDirection: 'row',
@@ -261,8 +259,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     checkboxActive: {
-        backgroundColor: COLORS.primary,
-        borderColor: COLORS.primary,
+        backgroundColor: COLORS.accent,
+        borderColor: COLORS.accent,
     },
     checkmark: {
         color: '#fff',
@@ -297,6 +295,6 @@ const styles = StyleSheet.create({
     saveButtonText: {
         fontSize: FONTS.sizes.lg,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.textPrimary,
+        color: '#FFFFFF',
     },
 });

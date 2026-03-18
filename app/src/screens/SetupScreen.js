@@ -85,7 +85,7 @@ export default function SetupScreen({ onComplete }) {
                     <TextInput
                         style={styles.input}
                         placeholder="+1 234 567 8900"
-                        placeholderTextColor="#555"
+                        placeholderTextColor="#999999"
                         keyboardType="phone-pad"
                         value={phoneNumber}
                         onChangeText={setPhoneNumber}
@@ -118,7 +118,7 @@ export default function SetupScreen({ onComplete }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#0A0A0F',
+        backgroundColor: '#F8F6F0',
     },
     content: {
         flex: 1,
@@ -133,9 +133,9 @@ const styles = StyleSheet.create({
         width: 90,
         height: 90,
         borderRadius: 45,
-        backgroundColor: 'rgba(220, 38, 38, 0.12)',
+        backgroundColor: 'rgba(211, 47, 47, 0.1)',
         borderWidth: 2,
-        borderColor: 'rgba(220, 38, 38, 0.3)',
+        borderColor: 'rgba(211, 47, 47, 0.25)',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -145,13 +145,13 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 32,
         fontWeight: '700',
-        color: '#FFFFFF',
+        color: '#1E3A5F',
         marginBottom: 12,
         letterSpacing: 0.5,
     },
     subtitle: {
         fontSize: 15,
-        color: '#888',
+        color: '#666666',
         textAlign: 'center',
         lineHeight: 22,
         marginBottom: 40,
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     inputLabel: {
         fontSize: 13,
         fontWeight: '600',
-        color: '#DC2626',
+        color: '#1E3A5F',
         marginBottom: 8,
         textTransform: 'uppercase',
         letterSpacing: 1,
@@ -171,25 +171,25 @@ const styles = StyleSheet.create({
     input: {
         width: '100%',
         height: 56,
-        backgroundColor: '#15151F',
+        backgroundColor: '#FFFFFF',
         borderRadius: 14,
         paddingHorizontal: 20,
         fontSize: 18,
-        color: '#FFFFFF',
+        color: '#333333',
         borderWidth: 1.5,
-        borderColor: '#2A2A3A',
+        borderColor: '#E0DDD6',
         letterSpacing: 1,
     },
     saveButton: {
         width: '100%',
         height: 56,
-        backgroundColor: '#DC2626',
+        backgroundColor: '#E67E22',
         borderRadius: 14,
         justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: '#DC2626',
+        shadowColor: '#E67E22',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.4,
+        shadowOpacity: 0.3,
         shadowRadius: 12,
         elevation: 8,
     },
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     footerNote: {
         marginTop: 32,
         fontSize: 12,
-        color: '#444',
+        color: '#999999',
         textAlign: 'center',
         lineHeight: 18,
     },

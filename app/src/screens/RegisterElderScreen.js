@@ -83,7 +83,7 @@ export default function RegisterElderScreen({ navigation }) {
     };
 
     return (
-        <LinearGradient colors={COLORS.gradientDark} style={styles.container}>
+        <View style={styles.container}>
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.flex}
@@ -181,7 +181,7 @@ export default function RegisterElderScreen({ navigation }) {
                     </Animated.View>
                 </ScrollView>
             </KeyboardAvoidingView>
-        </LinearGradient>
+        </View>
     );
 }
 
@@ -218,7 +218,7 @@ function InputField({
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1 },
+    container: { flex: 1, backgroundColor: COLORS.bg },
     flex: { flex: 1 },
     scrollContent: {
         flexGrow: 1,
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: FONTS.sizes.xl,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.textPrimary,
+        color: COLORS.navy,
     },
     subtitle: {
         fontSize: FONTS.sizes.md,
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: FONTS.sizes.lg,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.textPrimary,
+        color: '#FFFFFF',
     },
     loginContainer: {
         flexDirection: 'row',

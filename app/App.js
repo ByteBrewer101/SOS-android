@@ -23,7 +23,7 @@ const Stack = createNativeStackNavigator();
 
 const screenOptions = {
   headerShown: false,
-  contentStyle: { backgroundColor: '#0A0A0F' },
+  contentStyle: { backgroundColor: '#F8F6F0' },
   animation: 'slide_from_right',
 };
 
@@ -63,15 +63,15 @@ function AppNavigator() {
   if (isLoading) {
     return (
       <View style={styles.loading}>
-        <StatusBar style="light" />
-        <ActivityIndicator size="large" color="#E53E3E" />
+        <StatusBar style="dark" />
+        <ActivityIndicator size="large" color="#E67E22" />
       </View>
     );
   }
 
   return (
     <NavigationContainer>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       {!isAuthenticated ? (
         <AuthStack />
       ) : role === 'elder' ? (
@@ -94,7 +94,7 @@ export default function App() {
 const styles = StyleSheet.create({
   loading: {
     flex: 1,
-    backgroundColor: '#0A0A0F',
+    backgroundColor: '#F8F6F0',
     justifyContent: 'center',
     alignItems: 'center',
   },

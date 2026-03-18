@@ -100,8 +100,8 @@ export default function VolunteerHomeScreen({ navigation }) {
             >
                 {/* Header */}
                 <View style={styles.alertHeader}>
-                    <View style={styles.alertBadge}>
-                        <Text style={styles.alertBadgeText}>
+                    <View style={[styles.alertBadge, isRecent ? styles.alertBadgeActive : styles.alertBadgePast]}>
+                        <Text style={[styles.alertBadgeText, isRecent ? styles.alertBadgeTextActive : styles.alertBadgeTextPast]}>
                             {isRecent ? 'ACTIVE' : 'PAST'}
                         </Text>
                     </View>
@@ -130,14 +130,9 @@ export default function VolunteerHomeScreen({ navigation }) {
                         activeOpacity={0.7}
                         onPress={() => Linking.openURL(`tel:${item.elderPhone}`)}
                     >
-                        <LinearGradient
-                            colors={[COLORS.success, '#38A169']}
-                            style={styles.actionGradient}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
-                        >
+                        <View style={styles.actionGradientCall}>
                             <Text style={styles.actionText}>Call</Text>
-                        </LinearGradient>
+                        </View>
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -149,14 +144,9 @@ export default function VolunteerHomeScreen({ navigation }) {
                             }
                         }}
                     >
-                        <LinearGradient
-                            colors={[COLORS.info, '#4299E1']}
-                            style={styles.actionGradient}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
-                        >
+                        <View style={styles.actionGradientMap}>
                             <Text style={styles.actionText}>Map</Text>
-                        </LinearGradient>
+                        </View>
                     </TouchableOpacity>
                 </View>
             </Animated.View>
@@ -225,7 +215,7 @@ export default function VolunteerHomeScreen({ navigation }) {
     );
 
     return (
-        <LinearGradient colors={COLORS.gradientDark} style={styles.container}>
+        <View style={styles.container}>
             <FlatList
                 data={alerts}
                 renderItem={renderAlertItem}
@@ -245,12 +235,12 @@ export default function VolunteerHomeScreen({ navigation }) {
                     />
                 }
             />
-        </LinearGradient>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1 },
+    container: { flex: 1, backgroundColor: COLORS.bg },
     listContent: {
         paddingHorizontal: SPACING.xxl,
         paddingTop: 60,
@@ -271,20 +261,18 @@ const styles = StyleSheet.create({
     greetingName: {
         fontSize: FONTS.sizes.xxl,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.textPrimary,
+        color: COLORS.navy,
         maxWidth: width * 0.6,
     },
     profileButton: {
         width: 50,
         height: 50,
         borderRadius: RADIUS.full,
-        backgroundColor: COLORS.bgElevated,
+        backgroundColor: COLORS.navy,
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 1,
-        borderColor: COLORS.border,
     },
-    profileText: { fontSize: FONTS.sizes.xs, color: COLORS.textPrimary, fontWeight: FONTS.weights.bold, textTransform: 'uppercase' },
+    profileText: { fontSize: FONTS.sizes.xs, color: '#FFFFFF', fontWeight: FONTS.weights.bold, textTransform: 'uppercase' },
     // Status Card
     statusCard: {
         backgroundColor: COLORS.bgCard,
@@ -306,7 +294,7 @@ const styles = StyleSheet.create({
     statusValue: {
         fontSize: FONTS.sizes.xl,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.textPrimary,
+        color: COLORS.navy,
         marginBottom: SPACING.xs,
     },
     statusLabel: {
@@ -324,7 +312,7 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: FONTS.sizes.xl,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.textPrimary,
+        color: COLORS.navy,
         marginBottom: SPACING.xs,
     },
     sectionSubtitle: {
@@ -343,7 +331,7 @@ const styles = StyleSheet.create({
         ...SHADOWS.card,
     },
     alertCardUrgent: {
-        borderColor: COLORS.primary,
+        borderColor: COLORS.danger,
         borderWidth: 1.5,
     },
     alertHeader: {
@@ -353,15 +341,25 @@ const styles = StyleSheet.create({
         marginBottom: SPACING.md,
     },
     alertBadge: {
-        backgroundColor: 'rgba(229,62,62,0.15)',
         paddingHorizontal: SPACING.md,
         paddingVertical: SPACING.xs,
         borderRadius: RADIUS.full,
     },
+    alertBadgeActive: {
+        backgroundColor: 'rgba(211,47,47,0.12)',
+    },
+    alertBadgePast: {
+        backgroundColor: COLORS.bgElevated,
+    },
     alertBadgeText: {
         fontSize: FONTS.sizes.xs,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.primary,
+    },
+    alertBadgeTextActive: {
+        color: COLORS.danger,
+    },
+    alertBadgeTextPast: {
+        color: COLORS.textMuted,
     },
     alertTime: {
         fontSize: FONTS.sizes.xs,
@@ -400,18 +398,28 @@ const styles = StyleSheet.create({
     actionButton: {
         flex: 1,
     },
-    actionGradient: {
+    actionGradientCall: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         height: 46,
         borderRadius: RADIUS.md,
         gap: SPACING.sm,
+        backgroundColor: COLORS.success,
+    },
+    actionGradientMap: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 46,
+        borderRadius: RADIUS.md,
+        gap: SPACING.sm,
+        backgroundColor: COLORS.navy,
     },
     actionText: {
         fontSize: FONTS.sizes.md,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.textPrimary,
+        color: '#FFFFFF',
     },
     // Empty
     emptyContainer: {

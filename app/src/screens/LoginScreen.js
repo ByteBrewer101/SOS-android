@@ -72,7 +72,7 @@ export default function LoginScreen({ navigation, route }) {
     };
 
     return (
-        <LinearGradient colors={COLORS.gradientDark} style={styles.container}>
+        <View style={styles.container}>
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.flex}
@@ -148,12 +148,7 @@ export default function LoginScreen({ navigation, route }) {
                                     {loading ? (
                                         <ActivityIndicator color="#fff" size="small" />
                                     ) : (
-                                        <Text
-                                            style={[
-                                                styles.buttonText,
-                                                !isElder && { color: '#0A0A0F' },
-                                            ]}
-                                        >
+                                        <Text style={styles.buttonText}>
                                             Login
                                         </Text>
                                     )}
@@ -186,12 +181,12 @@ export default function LoginScreen({ navigation, route }) {
                     </Animated.View>
                 </ScrollView>
             </KeyboardAvoidingView>
-        </LinearGradient>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1 },
+    container: { flex: 1, backgroundColor: COLORS.bg },
     flex: { flex: 1 },
     scrollContent: {
         flexGrow: 1,
@@ -207,7 +202,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: FONTS.sizes.xxl,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.textPrimary,
+        color: COLORS.navy,
         marginBottom: SPACING.xs,
     },
     subtitle: {
@@ -252,7 +247,7 @@ const styles = StyleSheet.create({
     },
     eyeText: {
         fontSize: FONTS.sizes.sm,
-        color: COLORS.textSecondary,
+        color: COLORS.accent,
         fontWeight: FONTS.weights.medium,
     },
     button: {
@@ -266,7 +261,7 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: FONTS.sizes.lg,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.textPrimary,
+        color: '#FFFFFF',
     },
     registerContainer: {
         flexDirection: 'row',

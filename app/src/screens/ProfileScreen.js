@@ -125,7 +125,7 @@ export default function ProfileScreen({ navigation }) {
     };
 
     return (
-        <LinearGradient colors={COLORS.gradientDark} style={styles.container}>
+        <View style={styles.container}>
             <ScrollView
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
@@ -250,7 +250,7 @@ export default function ProfileScreen({ navigation }) {
                                             style={styles.saveButton}
                                         >
                                             {saving ? (
-                                                <ActivityIndicator color="#0A0A0F" size="small" />
+                                                <ActivityIndicator color="#FFFFFF" size="small" />
                                             ) : (
                                                 <Text style={styles.saveText}>Save Changes</Text>
                                             )}
@@ -262,9 +262,12 @@ export default function ProfileScreen({ navigation }) {
                                     activeOpacity={0.85}
                                     onPress={() => setEditing(true)}
                                 >
-                                    <View style={styles.editButton}>
+                                    <LinearGradient
+                                        colors={COLORS.gradientAccent}
+                                        style={styles.editButton}
+                                    >
                                         <Text style={styles.editText}>Edit Profile</Text>
-                                    </View>
+                                    </LinearGradient>
                                 </TouchableOpacity>
                             )}
                         </View>
@@ -286,7 +289,7 @@ export default function ProfileScreen({ navigation }) {
                     </View>
                 </Animated.View>
             </ScrollView>
-        </LinearGradient>
+        </View>
     );
 }
 
@@ -318,7 +321,7 @@ function ProfileField({
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1 },
+    container: { flex: 1, backgroundColor: COLORS.bg },
     scrollContent: {
         paddingHorizontal: SPACING.xxl,
         paddingTop: 60,
@@ -345,25 +348,23 @@ const styles = StyleSheet.create({
         marginBottom: SPACING.md,
         ...SHADOWS.card,
     },
-    avatarText: { fontSize: 32, fontWeight: FONTS.weights.bold, color: COLORS.textPrimary },
+    avatarText: { fontSize: 32, fontWeight: FONTS.weights.bold, color: '#FFFFFF' },
     userName: {
         fontSize: FONTS.sizes.xl,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.textPrimary,
+        color: COLORS.navy,
         marginBottom: SPACING.sm,
     },
     roleBadge: {
-        backgroundColor: COLORS.bgElevated,
+        backgroundColor: COLORS.navy,
         paddingHorizontal: SPACING.lg,
         paddingVertical: SPACING.xs,
         borderRadius: RADIUS.full,
-        borderWidth: 1,
-        borderColor: COLORS.border,
     },
     roleText: {
         fontSize: FONTS.sizes.xs,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.accent,
+        color: '#FFFFFF',
         letterSpacing: 1,
     },
     // Section
@@ -378,7 +379,7 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: FONTS.sizes.md,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.textSecondary,
+        color: COLORS.navy,
         marginBottom: SPACING.lg,
         textTransform: 'uppercase',
         letterSpacing: 0.5,
@@ -405,7 +406,7 @@ const styles = StyleSheet.create({
         fontWeight: FONTS.weights.medium,
     },
     fieldEditable: {
-        backgroundColor: COLORS.bgInput,
+        backgroundColor: COLORS.bgElevated,
         borderRadius: RADIUS.sm,
         borderWidth: 1,
         borderColor: COLORS.borderLight,
@@ -417,18 +418,16 @@ const styles = StyleSheet.create({
         marginTop: SPACING.xxl,
     },
     editButton: {
-        backgroundColor: COLORS.bgCard,
         borderRadius: RADIUS.md,
         height: 52,
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 1,
-        borderColor: COLORS.borderLight,
+        ...SHADOWS.button,
     },
     editText: {
         fontSize: FONTS.sizes.md,
         fontWeight: FONTS.weights.semibold,
-        color: COLORS.textPrimary,
+        color: '#FFFFFF',
     },
     editActions: {
         flexDirection: 'row',
@@ -453,22 +452,23 @@ const styles = StyleSheet.create({
         borderRadius: RADIUS.md,
         justifyContent: 'center',
         alignItems: 'center',
+        ...SHADOWS.button,
     },
     saveText: {
         fontSize: FONTS.sizes.md,
         fontWeight: FONTS.weights.bold,
-        color: '#0A0A0F',
+        color: '#FFFFFF',
     },
     // Logout
     logoutButton: {
         marginTop: SPACING.xxl,
-        backgroundColor: 'rgba(229,62,62,0.1)',
+        backgroundColor: 'rgba(211,47,47,0.1)',
         borderRadius: RADIUS.md,
         height: 52,
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 1,
-        borderColor: 'rgba(229,62,62,0.3)',
+        borderColor: 'rgba(211,47,47,0.3)',
     },
     logoutText: {
         fontSize: FONTS.sizes.md,

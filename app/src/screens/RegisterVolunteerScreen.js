@@ -80,7 +80,7 @@ export default function RegisterVolunteerScreen({ navigation }) {
     };
 
     return (
-        <LinearGradient colors={COLORS.gradientDark} style={styles.container}>
+        <View style={styles.container}>
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.flex}
@@ -151,9 +151,9 @@ export default function RegisterVolunteerScreen({ navigation }) {
                                     end={{ x: 1, y: 0 }}
                                 >
                                     {loading ? (
-                                        <ActivityIndicator color="#0A0A0F" size="small" />
+                                        <ActivityIndicator color="#FFFFFF" size="small" />
                                     ) : (
-                                        <Text style={[styles.buttonText, { color: '#0A0A0F' }]}>
+                                        <Text style={styles.buttonText}>
                                             Create Account
                                         </Text>
                                     )}
@@ -171,7 +171,7 @@ export default function RegisterVolunteerScreen({ navigation }) {
                     </Animated.View>
                 </ScrollView>
             </KeyboardAvoidingView>
-        </LinearGradient>
+        </View>
     );
 }
 
@@ -208,7 +208,7 @@ function InputField({
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1 },
+    container: { flex: 1, backgroundColor: COLORS.bg },
     flex: { flex: 1 },
     scrollContent: {
         flexGrow: 1,
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: FONTS.sizes.xl,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.textPrimary,
+        color: COLORS.navy,
     },
     subtitle: {
         fontSize: FONTS.sizes.md,
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: FONTS.sizes.lg,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.textPrimary,
+        color: '#FFFFFF',
     },
     loginContainer: {
         flexDirection: 'row',

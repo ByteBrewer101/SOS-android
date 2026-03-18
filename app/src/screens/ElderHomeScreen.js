@@ -192,7 +192,7 @@ export default function ElderHomeScreen({ navigation }) {
     };
 
     return (
-        <LinearGradient colors={COLORS.gradientDark} style={styles.container}>
+        <View style={styles.container}>
             <SafeAreaView style={styles.safeArea}>
                 <View style={styles.content}>
                     {/* Top Menu */}
@@ -202,7 +202,7 @@ export default function ElderHomeScreen({ navigation }) {
                             onPress={() => navigation.navigate('VolunteerSelection')}
                             activeOpacity={0.7}
                         >
-                            <Ionicons name="people-outline" size={24} color={COLORS.textPrimary} />
+                            <Ionicons name="people-outline" size={24} color={COLORS.textOnDark} />
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -210,7 +210,7 @@ export default function ElderHomeScreen({ navigation }) {
                             onPress={() => navigation.navigate('Profile')}
                             activeOpacity={0.7}
                         >
-                            <Ionicons name="person-outline" size={24} color={COLORS.textPrimary} />
+                            <Ionicons name="person-outline" size={24} color={COLORS.textOnDark} />
                         </TouchableOpacity>
                     </View>
 
@@ -261,48 +261,44 @@ export default function ElderHomeScreen({ navigation }) {
                     )}
                 </View>
             </SafeAreaView>
-        </LinearGradient>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1 },
+    container: { flex: 1, backgroundColor: COLORS.bg },
     safeArea: { flex: 1 },
     content: {
         flex: 1,
-        justifyContent: 'space-between', // pushes bottom to bottom, but center needs to be centered
-        // We'll use a combination: center is flex:1 to take remaining space
+        justifyContent: 'space-between',
     },
     topMenu: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
         paddingHorizontal: SPACING.xxl,
-        paddingTop: Platform.OS === 'android' ? 40 : SPACING.md, // Add padding for Android SafeAreaView
+        paddingTop: Platform.OS === 'android' ? 40 : SPACING.md,
         gap: SPACING.md,
     },
     iconButton: {
         width: 44,
         height: 44,
         borderRadius: 22,
-        backgroundColor: COLORS.bgCard,
+        backgroundColor: COLORS.navy,
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 1,
-        borderColor: COLORS.border,
         ...SHADOWS.card,
     },
     center: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        // marginVertical optional
     },
     glowRing: {
         position: 'absolute',
         width: SOS_BUTTON_SIZE + 60,
         height: SOS_BUTTON_SIZE + 60,
         borderRadius: (SOS_BUTTON_SIZE + 60) / 2,
-        backgroundColor: COLORS.primary,
+        backgroundColor: COLORS.sos,
     },
     sosButton: {
         width: SOS_BUTTON_SIZE,
@@ -315,7 +311,7 @@ const styles = StyleSheet.create({
     sosText: {
         fontSize: FONTS.sizes.hero,
         fontWeight: FONTS.weights.extrabold,
-        color: COLORS.textPrimary,
+        color: '#FFFFFF',
         letterSpacing: 4,
     },
     sosSubtext: {

@@ -54,7 +54,7 @@ export default function RoleSelectScreen({ navigation }) {
     };
 
     return (
-        <LinearGradient colors={COLORS.gradientDark} style={styles.container}>
+        <View style={styles.container}>
             {/* Header */}
             <Animated.View
                 style={[
@@ -80,12 +80,12 @@ export default function RoleSelectScreen({ navigation }) {
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
                         >
-                            <Text style={styles.cardTitle}>Elder User</Text>
-                            <Text style={styles.cardDesc}>
+                            <Text style={styles.cardTitleLight}>Elder User</Text>
+                            <Text style={styles.cardDescLight}>
                                 I need emergency help & want to alert my contacts
                             </Text>
-                            <View style={styles.cardArrow}>
-                                <Text style={styles.arrowText}>Get Started →</Text>
+                            <View style={styles.cardArrowLight}>
+                                <Text style={styles.arrowTextLight}>Get Started →</Text>
                             </View>
                         </LinearGradient>
                     </TouchableOpacity>
@@ -103,14 +103,14 @@ export default function RoleSelectScreen({ navigation }) {
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
                         >
-                            <Text style={[styles.cardTitle, { color: '#0A0A0F' }]}>
+                            <Text style={styles.cardTitleLight}>
                                 Volunteer
                             </Text>
-                            <Text style={[styles.cardDesc, { color: '#1A1A2E' }]}>
+                            <Text style={styles.cardDescLight}>
                                 I want to help elders in emergency situations
                             </Text>
-                            <View style={[styles.cardArrow, { backgroundColor: 'rgba(0,0,0,0.15)' }]}>
-                                <Text style={[styles.arrowText, { color: '#0A0A0F' }]}>
+                            <View style={styles.cardArrowLight}>
+                                <Text style={styles.arrowTextLight}>
                                     Get Started →
                                 </Text>
                             </View>
@@ -125,13 +125,14 @@ export default function RoleSelectScreen({ navigation }) {
                     Helping elders stay safe, one tap at a time
                 </Text>
             </Animated.View>
-        </LinearGradient>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: COLORS.bg,
         paddingHorizontal: SPACING.xxl,
         justifyContent: 'center',
     },
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: FONTS.sizes.xxl,
         fontWeight: FONTS.weights.extrabold,
-        color: COLORS.textPrimary,
+        color: COLORS.navy,
         marginBottom: SPACING.sm,
     },
     subtitle: {
@@ -158,29 +159,29 @@ const styles = StyleSheet.create({
         borderRadius: RADIUS.xl,
         ...SHADOWS.card,
     },
-    cardTitle: {
+    cardTitleLight: {
         fontSize: FONTS.sizes.xl,
         fontWeight: FONTS.weights.bold,
-        color: COLORS.textPrimary,
+        color: '#FFFFFF',
         marginBottom: SPACING.sm,
     },
-    cardDesc: {
+    cardDescLight: {
         fontSize: FONTS.sizes.md,
-        color: 'rgba(255,255,255,0.8)',
+        color: 'rgba(255,255,255,0.85)',
         lineHeight: 22,
         marginBottom: SPACING.lg,
     },
-    cardArrow: {
+    cardArrowLight: {
         alignSelf: 'flex-start',
         backgroundColor: 'rgba(255,255,255,0.2)',
         paddingHorizontal: SPACING.lg,
         paddingVertical: SPACING.sm,
         borderRadius: RADIUS.full,
     },
-    arrowText: {
+    arrowTextLight: {
         fontSize: FONTS.sizes.md,
         fontWeight: FONTS.weights.semibold,
-        color: COLORS.textPrimary,
+        color: '#FFFFFF',
     },
     footer: {
         alignItems: 'center',
