@@ -42,6 +42,10 @@ const sosLogSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        notifiedVolunteerIds: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Volunteer',
+        }],
         status: {
             type: String,
             enum: ['triggered', 'acknowledged', 'resolved'],

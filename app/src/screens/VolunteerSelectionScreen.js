@@ -14,6 +14,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../theme';
 import { useAuth } from '../context/AuthContext';
 import { getAvailableVolunteers, selectVolunteers } from '../services/api';
@@ -117,6 +118,17 @@ export default function VolunteerSelectionScreen({ navigation }) {
 
     const ListHeader = () => (
         <View style={styles.header}>
+            {/* Back button — only show if user already has selected volunteers */}
+            {user?.selectedVolunteers && user.selectedVolunteers.length >= 2 && (
+                <TouchableOpacity
+                    style={styles.backButton}
+                    onPress={() => navigation.goBack()}
+                    activeOpacity={0.7}
+                >
+                    <Ionicons name="arrow-back" size={22} color={COLORS.textSecondary} />
+                    <Text style={styles.backText}>Back</Text>
+                </TouchableOpacity>
+            )}
             <Text style={styles.title}>Select Volunteers</Text>
             <Text style={styles.subtitle}>
                 Choose at least 2 volunteers who will be notified when you trigger an SOS.
@@ -197,6 +209,17 @@ const styles = StyleSheet.create({
     header: {
         alignItems: 'center',
         marginBottom: SPACING.xxxl,
+    },
+    backButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        gap: SPACING.sm,
+        marginBottom: SPACING.lg,
+    },
+    backText: {
+        fontSize: FONTS.sizes.md,
+        color: COLORS.textSecondary,
     },
     title: {
         fontSize: FONTS.sizes.xl,

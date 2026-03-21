@@ -14,6 +14,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../theme';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -135,8 +136,10 @@ export default function ProfileScreen({ navigation }) {
                     <TouchableOpacity
                         style={styles.backButton}
                         onPress={() => navigation.goBack()}
+                        activeOpacity={0.7}
                     >
-                        <Text style={styles.backText}>← Back</Text>
+                        <Ionicons name="arrow-back" size={22} color={COLORS.textSecondary} />
+                        <Text style={styles.backText}>Back</Text>
                     </TouchableOpacity>
 
                     {/* Avatar */}
@@ -328,6 +331,9 @@ const styles = StyleSheet.create({
         paddingBottom: SPACING.huge,
     },
     backButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: SPACING.sm,
         marginBottom: SPACING.xl,
     },
     backText: {

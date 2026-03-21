@@ -17,6 +17,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../theme';
 import { useAuth } from '../context/AuthContext';
 import { loginElder, loginVolunteer } from '../services/api';
@@ -83,6 +84,16 @@ export default function LoginScreen({ navigation, route }) {
                     showsVerticalScrollIndicator={false}
                 >
                     <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
+                        {/* Back Button */}
+                        <TouchableOpacity
+                            style={styles.backButton}
+                            onPress={() => navigation.goBack()}
+                            activeOpacity={0.7}
+                        >
+                            <Ionicons name="arrow-back" size={22} color={COLORS.textSecondary} />
+                            <Text style={styles.backButtonText}>Back</Text>
+                        </TouchableOpacity>
+
                         {/* Header */}
                         <View style={styles.header}>
                             <Text style={styles.title}>
@@ -170,14 +181,6 @@ export default function LoginScreen({ navigation, route }) {
                                 <Text style={styles.registerLink}>Register</Text>
                             </TouchableOpacity>
                         </View>
-
-                        {/* Back */}
-                        <TouchableOpacity
-                            style={styles.backButton}
-                            onPress={() => navigation.goBack()}
-                        >
-                            <Text style={styles.backText}>← Choose different role</Text>
-                        </TouchableOpacity>
                     </Animated.View>
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -278,11 +281,13 @@ const styles = StyleSheet.create({
         color: COLORS.accent,
     },
     backButton: {
+        flexDirection: 'row',
         alignItems: 'center',
-        marginTop: SPACING.lg,
+        gap: SPACING.sm,
+        marginBottom: SPACING.lg,
     },
-    backText: {
-        fontSize: FONTS.sizes.sm,
-        color: COLORS.textMuted,
+    backButtonText: {
+        fontSize: FONTS.sizes.md,
+        color: COLORS.textSecondary,
     },
 });

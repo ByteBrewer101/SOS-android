@@ -58,8 +58,9 @@ const triggerSOS = asyncHandler(async (req, res) => {
         }
     );
 
-    // Update the SOS log with notification count
+    // Update the SOS log with notification count and notified volunteer IDs
     sosLog.notifiedVolunteers = notifResult.notifiedCount || 0;
+    sosLog.notifiedVolunteerIds = elder.selectedVolunteers || [];
     await sosLog.save();
 
     logger.info(`📢 ${notifResult.notifiedCount || 0} selected volunteers notified`);

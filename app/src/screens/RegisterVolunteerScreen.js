@@ -16,6 +16,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../theme';
 import { useAuth } from '../context/AuthContext';
 import { registerVolunteer } from '../services/api';
@@ -91,6 +92,16 @@ export default function RegisterVolunteerScreen({ navigation }) {
                     showsVerticalScrollIndicator={false}
                 >
                     <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
+                        {/* Back Button */}
+                        <TouchableOpacity
+                            style={styles.backButton}
+                            onPress={() => navigation.goBack()}
+                            activeOpacity={0.7}
+                        >
+                            <Ionicons name="arrow-back" size={22} color={COLORS.textSecondary} />
+                            <Text style={styles.backText}>Back</Text>
+                        </TouchableOpacity>
+
                         {/* Header */}
                         <View style={styles.header}>
                             <Text style={styles.title}>Volunteer Registration</Text>
@@ -219,7 +230,7 @@ const styles = StyleSheet.create({
     header: {
         alignItems: 'center',
         marginBottom: SPACING.xxl,
-        marginTop: SPACING.xl,
+        marginTop: SPACING.md,
     },
     title: {
         fontSize: FONTS.sizes.xl,
@@ -308,5 +319,16 @@ const styles = StyleSheet.create({
         fontSize: FONTS.sizes.md,
         fontWeight: FONTS.weights.bold,
         color: COLORS.accent,
+    },
+    backButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: SPACING.sm,
+        marginBottom: SPACING.lg,
+        paddingTop: Platform.OS === 'android' ? 20 : 0,
+    },
+    backText: {
+        fontSize: FONTS.sizes.md,
+        color: COLORS.textSecondary,
     },
 });
