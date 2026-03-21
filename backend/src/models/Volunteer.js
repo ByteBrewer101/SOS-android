@@ -60,7 +60,7 @@ const volunteerSchema = new mongoose.Schema(
         },
         isVerified: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         deviceToken: {
             type: String,
