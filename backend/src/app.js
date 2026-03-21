@@ -45,6 +45,7 @@ const limiter = rateLimit({
     },
     standardHeaders: true,
     legacyHeaders: false,
+    skip: (req) => req.path === '/api/volunteer/sse', // Skip rate limiting for SSE
 });
 app.use('/api', limiter);
 

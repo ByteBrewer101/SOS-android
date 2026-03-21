@@ -4,6 +4,8 @@ const SOSLog = require('../models/SOSLog');
 const asyncHandler = require('../utils/asyncHandler');
 const ApiError = require('../utils/ApiError');
 const ApiResponse = require('../utils/ApiResponse');
+const sseManager = require('../services/sseManager');
+const logger = require('../utils/logger');
 
 /**
  * @desc    Get volunteer profile
@@ -77,8 +79,45 @@ const getAlerts = asyncHandler(async (req, res) => {
     }, 'Alerts retrieved successfully');
 });
 
+/**
+ * @desc    Subscribe to real-time SOS alerts via SSE
+ * @route   GET /api/volunteer/sse
+ * @access  Private (Volunteer only)
+ */
+const subscribeSSE = (req, res) => {
+    const volunteerId = req.user._id;
+
+    // Set SSE headers
+    res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'Access-Control-Allow-Origin': '*',
+        'X-Accel-Buffering': 'no', // Disable nginx buffering
+    });
+
+    // Send initial connection confirmation event
+    res.write(`event: connected\ndata: ${JSON.stringify({ message: 'SSE connection established', volunteerId: volunteerId.toString() })}\n\n`);
+
+    // Register this client in the SSE manager
+    sseManager.addClient(volunteerId, res);
+
+    // Handle client disconnect
+    req.on('close', () => {
+        sseManager.removeClient(volunteerId, res);
+        logger.info(`📡 Volunteer ${volunteerId} SSE connection closed`);
+    });
+
+    // Keep connection alive — the sseManager handles heartbeats globally,
+    // but we also prevent Express from timing out this request
+    req.socket.setTimeout(0);
+    req.socket.setNoDelay(true);
+    req.socket.setKeepAlive(true);
+};
+
 module.exports = {
     getProfile,
     updateDeviceToken,
     getAlerts,
+    subscribeSSE,
 };

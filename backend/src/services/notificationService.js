@@ -1,5 +1,6 @@
 const Volunteer = require('../models/Volunteer');
 const logger = require('../utils/logger');
+const sseManager = require('./sseManager');
 
 /**
  * Send push notification to a single device (stubbed - Firebase disabled)
@@ -10,7 +11,9 @@ const sendToDevice = async (deviceToken, title, body, data = {}) => {
 };
 
 /**
- * Broadcast SOS alert to selected verified volunteers (stubbed - Firebase disabled)
+ * Broadcast SOS alert to selected verified volunteers
+ * - Sends real-time SSE events to connected volunteers
+ * - Falls back to stub logging for push notifications (Firebase disabled)
  */
 const broadcastSOSAlert = async (selectedVolunteerIds, sosData) => {
     const { elderName, elderPhone, latitude, longitude, locationLink } = sosData;
@@ -26,12 +29,30 @@ const broadcastSOSAlert = async (selectedVolunteerIds, sosData) => {
         return { notifiedCount: 0, volunteers: [] };
     }
 
-    logger.info(`📢 [STUB] Would broadcast SOS to ${volunteers.length} selected volunteers`);
-    logger.info(`📢 [STUB] Elder: ${elderName} (${elderPhone}) at ${latitude}, ${longitude}`);
-    logger.info(`📢 [STUB] Location: ${locationLink}`);
+    // Send real-time SSE notification to connected volunteers
+    const ssePayload = {
+        type: 'sos_alert',
+        elderName,
+        elderPhone,
+        latitude,
+        longitude,
+        locationLink,
+        timestamp: new Date().toISOString(),
+    };
+
+    const sseNotified = sseManager.broadcastToVolunteers(
+        selectedVolunteerIds.map(id => id.toString()),
+        'sos_alert',
+        ssePayload
+    );
+
+    logger.info(`📢 SSE real-time notification sent to ${sseNotified} connected volunteers`);
+    logger.info(`📢 Elder: ${elderName} (${elderPhone}) at ${latitude}, ${longitude}`);
+    logger.info(`📢 Location: ${locationLink}`);
 
     return {
         notifiedCount: volunteers.length,
+        sseNotifiedCount: sseNotified,
         volunteers: volunteers.map((v) => v.name),
     };
 };

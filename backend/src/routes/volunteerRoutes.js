@@ -82,4 +82,28 @@ router.put('/device-token', protect, authorize('volunteer'), deviceTokenRules, v
  */
 router.get('/alerts', protect, authorize('volunteer'), volunteerController.getAlerts);
 
+/**
+ * @swagger
+ * /volunteer/sse:
+ *   get:
+ *     summary: Subscribe to real-time SOS alerts via Server-Sent Events
+ *     description: |
+ *       Opens a persistent SSE connection. The server will push events when:
+ *       - An elder triggers an SOS alert (event: sos_alert)
+ *       - Heartbeat keep-alive pings (comment lines)
+ *     tags: [Volunteer]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: SSE stream opened. Events will be pushed in real-time.
+ *         content:
+ *           text/event-stream:
+ *             schema:
+ *               type: string
+ *       401:
+ *         description: Not authorized
+ */
+router.get('/sse', protect, authorize('volunteer'), volunteerController.subscribeSSE);
+
 module.exports = router;

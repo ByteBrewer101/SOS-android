@@ -1,5 +1,5 @@
 /**
- * Volunteer Home Screen — SOS alerts list
+ * Volunteer Home Screen — SOS alerts list with real-time SSE notifications
  */
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
@@ -12,11 +12,14 @@ import {
     RefreshControl,
     Linking,
     Dimensions,
+    Vibration,
+    Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../theme';
 import { useAuth } from '../context/AuthContext';
 import { getVolunteerAlerts } from '../services/api';
+import sseService from '../services/sseService';
 
 const { width } = Dimensions.get('window');
 
@@ -26,6 +29,13 @@ export default function VolunteerHomeScreen({ navigation }) {
     const [refreshing, setRefreshing] = useState(false);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+
+    // Real-time notification state
+    const [notification, setNotification] = useState(null);
+    const [sseConnected, setSseConnected] = useState(false);
+    const notifAnim = useRef(new Animated.Value(-120)).current;
+    const notifOpacity = useRef(new Animated.Value(0)).current;
+    const pulseAnim = useRef(new Animated.Value(1)).current;
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -38,6 +48,105 @@ export default function VolunteerHomeScreen({ navigation }) {
 
         fetchAlerts(1);
     }, []);
+
+    // ─── SSE Connection ─────────────────────────────────────────────────
+    useEffect(() => {
+        // Connect to SSE for real-time notifications
+        sseService.connect();
+
+        // Listen for connection status
+        const unsubConnected = sseService.on('connected', () => {
+            setSseConnected(true);
+        });
+
+        // Listen for SOS alerts
+        const unsubSOS = sseService.on('sos_alert', (data) => {
+            console.log('🚨 Real-time SOS received:', data);
+            handleIncomingSOS(data);
+        });
+
+        return () => {
+            unsubConnected();
+            unsubSOS();
+            sseService.disconnect();
+        };
+    }, []);
+
+    /**
+     * Handle incoming SOS alert from SSE
+     */
+    const handleIncomingSOS = useCallback((data) => {
+        // Vibrate to get attention
+        if (Platform.OS !== 'web') {
+            Vibration.vibrate([0, 500, 200, 500]);
+        }
+
+        // Show notification banner
+        setNotification(data);
+        showNotificationBanner();
+
+        // Refresh alerts list to include the new one
+        fetchAlerts(1);
+    }, []);
+
+    /**
+     * Animate notification banner in and out
+     */
+    const showNotificationBanner = () => {
+        // Slide in and fade in
+        Animated.parallel([
+            Animated.spring(notifAnim, {
+                toValue: 0,
+                useNativeDriver: true,
+                speed: 12,
+                bounciness: 8,
+            }),
+            Animated.timing(notifOpacity, {
+                toValue: 1,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+        ]).start();
+
+        // Pulse animation for urgency
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(pulseAnim, {
+                    toValue: 1.03,
+                    duration: 600,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(pulseAnim, {
+                    toValue: 1,
+                    duration: 600,
+                    useNativeDriver: true,
+                }),
+            ])
+        ).start();
+
+        // Auto-dismiss after 15 seconds
+        setTimeout(() => {
+            dismissNotification();
+        }, 15000);
+    };
+
+    const dismissNotification = () => {
+        Animated.parallel([
+            Animated.timing(notifAnim, {
+                toValue: -120,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+            Animated.timing(notifOpacity, {
+                toValue: 0,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+        ]).start(() => {
+            setNotification(null);
+            pulseAnim.setValue(1);
+        });
+    };
 
     const fetchAlerts = async (pageNum = 1) => {
         try {
@@ -171,6 +280,14 @@ export default function VolunteerHomeScreen({ navigation }) {
                 </TouchableOpacity>
             </View>
 
+            {/* SSE Connection Status */}
+            <View style={styles.sseStatusRow}>
+                <View style={[styles.sseStatusDot, sseConnected ? styles.sseStatusDotActive : styles.sseStatusDotInactive]} />
+                <Text style={styles.sseStatusText}>
+                    {sseConnected ? 'Live updates active' : 'Connecting...'}
+                </Text>
+            </View>
+
             {/* Status Card */}
             <View style={styles.statusCard}>
                 <View style={styles.statusRow}>
@@ -235,6 +352,65 @@ export default function VolunteerHomeScreen({ navigation }) {
                     />
                 }
             />
+
+            {/* ─── Real-time SOS Notification Banner ──────────────────────── */}
+            {notification && (
+                <Animated.View
+                    style={[
+                        styles.notificationBanner,
+                        {
+                            transform: [
+                                { translateY: notifAnim },
+                                { scale: pulseAnim },
+                            ],
+                            opacity: notifOpacity,
+                        },
+                    ]}
+                >
+                    <TouchableOpacity
+                        style={styles.notificationContent}
+                        activeOpacity={0.9}
+                        onPress={() => {
+                            dismissNotification();
+                            // Scroll to top to see the new alert
+                            onRefresh();
+                        }}
+                    >
+                        <View style={styles.notifHeader}>
+                            <View style={styles.notifBadge}>
+                                <Text style={styles.notifBadgeText}>🚨 SOS ALERT</Text>
+                            </View>
+                            <TouchableOpacity onPress={dismissNotification} style={styles.notifDismiss}>
+                                <Text style={styles.notifDismissText}>✕</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <Text style={styles.notifName}>{notification.elderName} needs help!</Text>
+                        <Text style={styles.notifPhone}>+91 {notification.elderPhone}</Text>
+                        <View style={styles.notifActions}>
+                            <TouchableOpacity
+                                style={styles.notifCallBtn}
+                                onPress={() => {
+                                    dismissNotification();
+                                    Linking.openURL(`tel:${notification.elderPhone}`);
+                                }}
+                            >
+                                <Text style={styles.notifCallText}>📞 Call Now</Text>
+                            </TouchableOpacity>
+                            {notification.locationLink && (
+                                <TouchableOpacity
+                                    style={styles.notifMapBtn}
+                                    onPress={() => {
+                                        dismissNotification();
+                                        Linking.openURL(notification.locationLink);
+                                    }}
+                                >
+                                    <Text style={styles.notifMapText}>📍 Open Map</Text>
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    </TouchableOpacity>
+                </Animated.View>
+            )}
         </View>
     );
 }
@@ -251,7 +427,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: SPACING.xxl,
+        marginBottom: SPACING.md,
     },
     greetingLeft: {},
     greetingHi: {
@@ -273,6 +449,28 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     profileText: { fontSize: FONTS.sizes.xs, color: '#FFFFFF', fontWeight: FONTS.weights.bold, textTransform: 'uppercase' },
+    // SSE Status
+    sseStatusRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: SPACING.xl,
+    },
+    sseStatusDot: {
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        marginRight: SPACING.sm,
+    },
+    sseStatusDotActive: {
+        backgroundColor: '#4CAF50',
+    },
+    sseStatusDotInactive: {
+        backgroundColor: '#FFA726',
+    },
+    sseStatusText: {
+        fontSize: FONTS.sizes.xs,
+        color: COLORS.textMuted,
+    },
     // Status Card
     statusCard: {
         backgroundColor: COLORS.bgCard,
@@ -436,5 +634,96 @@ const styles = StyleSheet.create({
         color: COLORS.textMuted,
         marginTop: SPACING.xs,
         textAlign: 'center',
+    },
+    // ─── Notification Banner ─────────────────────────────────────────
+    notificationBanner: {
+        position: 'absolute',
+        top: Platform.OS === 'android' ? 40 : 50,
+        left: SPACING.lg,
+        right: SPACING.lg,
+        zIndex: 1000,
+        elevation: 20,
+    },
+    notificationContent: {
+        backgroundColor: '#1A1A2E',
+        borderRadius: RADIUS.lg,
+        padding: SPACING.lg,
+        borderWidth: 2,
+        borderColor: '#D32F2F',
+        shadowColor: '#D32F2F',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.4,
+        shadowRadius: 12,
+        elevation: 20,
+    },
+    notifHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: SPACING.sm,
+    },
+    notifBadge: {
+        backgroundColor: '#D32F2F',
+        borderRadius: RADIUS.full,
+        paddingHorizontal: SPACING.md,
+        paddingVertical: SPACING.xs,
+    },
+    notifBadgeText: {
+        color: '#FFFFFF',
+        fontSize: FONTS.sizes.xs,
+        fontWeight: FONTS.weights.bold,
+        letterSpacing: 1,
+    },
+    notifDismiss: {
+        width: 28,
+        height: 28,
+        borderRadius: 14,
+        backgroundColor: 'rgba(255,255,255,0.15)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    notifDismissText: {
+        color: '#FFFFFF',
+        fontSize: 14,
+        fontWeight: FONTS.weights.bold,
+    },
+    notifName: {
+        color: '#FFFFFF',
+        fontSize: FONTS.sizes.lg,
+        fontWeight: FONTS.weights.bold,
+        marginBottom: 2,
+    },
+    notifPhone: {
+        color: 'rgba(255,255,255,0.7)',
+        fontSize: FONTS.sizes.sm,
+        marginBottom: SPACING.md,
+    },
+    notifActions: {
+        flexDirection: 'row',
+        gap: SPACING.md,
+    },
+    notifCallBtn: {
+        flex: 1,
+        backgroundColor: '#4CAF50',
+        borderRadius: RADIUS.md,
+        paddingVertical: SPACING.sm,
+        alignItems: 'center',
+    },
+    notifCallText: {
+        color: '#FFFFFF',
+        fontSize: FONTS.sizes.sm,
+        fontWeight: FONTS.weights.bold,
+    },
+    notifMapBtn: {
+        flex: 1,
+        backgroundColor: '#1565C0',
+        borderRadius: RADIUS.md,
+        paddingVertical: SPACING.sm,
+        alignItems: 'center',
+    },
+    notifMapText: {
+        color: '#FFFFFF',
+        fontSize: FONTS.sizes.sm,
+        fontWeight: FONTS.weights.bold,
     },
 });

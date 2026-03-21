@@ -14,6 +14,11 @@ const protect = asyncHandler(async (req, res, next) => {
         token = req.headers.authorization.split(' ')[1];
     }
 
+    // Also support token via query parameter (used by SSE connections)
+    if (!token && req.query.token) {
+        token = req.query.token;
+    }
+
     if (!token) {
         throw ApiError.unauthorized('Not authorized. Please log in.');
     }
