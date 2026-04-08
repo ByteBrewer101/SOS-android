@@ -9,14 +9,14 @@ const elderSchema = new mongoose.Schema(
             trim: true,
             maxlength: [100, 'Name cannot exceed 100 characters'],
         },
-        phone: {
+        email: {
             type: String,
-            required: [true, 'Phone number is required'],
+            required: [true, 'Email is required'],
             unique: true,
             trim: true,
-            match: [/^[6-9]\d{9}$/, 'Please enter a valid Indian phone number'],
+            match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email address'],
         },
-        phoneVerified: {
+        emailVerified: {
             type: Boolean,
             default: false,
         },

@@ -34,7 +34,7 @@ const {
  *             type: object
  *             required:
  *               - name
- *               - phone
+ *               - email
  *               - password
  *               - emergencyContactName
  *               - emergencyContactNumber
@@ -42,9 +42,9 @@ const {
  *               name:
  *                 type: string
  *                 example: Rajesh Kumar
- *               phone:
+ *               email:
  *                 type: string
- *                 example: "9876543210"
+ *                 example: "user@example.com"
  *               password:
  *                 type: string
  *                 example: "password123"
@@ -58,7 +58,7 @@ const {
  *       201:
  *         description: Elder registered successfully
  *       400:
- *         description: Validation error or phone already exists
+ *         description: Validation error or email already exists
  */
 router.post('/elder/register', elderRegistrationRules, validate, authController.registerElder);
 
@@ -76,6 +76,7 @@ router.post('/elder/register', elderRegistrationRules, validate, authController.
  *             type: object
  *             required:
  *               - name
+ *               - email
  *               - phone
  *               - password
  *               - aadhaarNumber
@@ -83,6 +84,9 @@ router.post('/elder/register', elderRegistrationRules, validate, authController.
  *               name:
  *                 type: string
  *                 example: Amit Singh
+ *               email:
+ *                 type: string
+ *                 example: "vol@example.com"
  *               phone:
  *                 type: string
  *                 example: "9876543212"
@@ -96,7 +100,7 @@ router.post('/elder/register', elderRegistrationRules, validate, authController.
  *       201:
  *         description: Volunteer registered successfully
  *       400:
- *         description: Validation error or phone already exists
+ *         description: Validation error or email already exists
  */
 router.post('/volunteer/register', volunteerRegistrationRules, validate, authController.registerVolunteer);
 
@@ -113,12 +117,12 @@ router.post('/volunteer/register', volunteerRegistrationRules, validate, authCon
  *           schema:
  *             type: object
  *             required:
- *               - phone
+ *               - email
  *               - password
  *             properties:
- *               phone:
+ *               email:
  *                 type: string
- *                 example: "9876543210"
+ *                 example: "user@example.com"
  *               password:
  *                 type: string
  *                 example: "password123"
@@ -143,12 +147,12 @@ router.post('/elder/login', loginRules, validate, authController.loginElder);
  *           schema:
  *             type: object
  *             required:
- *               - phone
+ *               - email
  *               - password
  *             properties:
- *               phone:
+ *               email:
  *                 type: string
- *                 example: "9876543212"
+ *                 example: "vol@example.com"
  *               password:
  *                 type: string
  *                 example: "password123"
@@ -164,7 +168,7 @@ router.post('/volunteer/login', loginRules, validate, authController.loginVolunt
  * @swagger
  * /auth/send-otp:
  *   post:
- *     summary: Send phone OTP for verification
+ *     summary: Send email OTP for verification
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -173,11 +177,11 @@ router.post('/volunteer/login', loginRules, validate, authController.loginVolunt
  *           schema:
  *             type: object
  *             required:
- *               - phone
+ *               - email
  *             properties:
- *               phone:
+ *               email:
  *                 type: string
- *                 example: "9876543210"
+ *                 example: "user@example.com"
  *     responses:
  *       200:
  *         description: OTP sent successfully
@@ -188,7 +192,7 @@ router.post('/send-otp', otpSendRules, validate, authController.sendOTP);
  * @swagger
  * /auth/verify-otp:
  *   post:
- *     summary: Verify phone OTP
+ *     summary: Verify email OTP
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -197,12 +201,12 @@ router.post('/send-otp', otpSendRules, validate, authController.sendOTP);
  *           schema:
  *             type: object
  *             required:
- *               - phone
+ *               - email
  *               - otp
  *             properties:
- *               phone:
+ *               email:
  *                 type: string
- *                 example: "9876543210"
+ *                 example: "user@example.com"
  *               otp:
  *                 type: string
  *                 example: "123456"

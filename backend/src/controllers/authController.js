@@ -21,17 +21,17 @@ const generateToken = (id, role) => {
  * @access  Public
  */
 const registerElder = asyncHandler(async (req, res) => {
-    const { name, phone, password, emergencyContactName, emergencyContactNumber } = req.body;
+    const { name, email, password, emergencyContactName, emergencyContactNumber } = req.body;
 
     // Check if elder already exists
-    const existingElder = await Elder.findOne({ phone });
+    const existingElder = await Elder.findOne({ email });
     if (existingElder) {
-        throw ApiError.badRequest('An account with this phone number already exists');
+        throw ApiError.badRequest('An account with this email already exists');
     }
 
     const elder = await Elder.create({
         name,
-        phone,
+        email,
         password,
         emergencyContactName,
         emergencyContactNumber,
@@ -51,12 +51,12 @@ const registerElder = asyncHandler(async (req, res) => {
  * @access  Public
  */
 const registerVolunteer = asyncHandler(async (req, res) => {
-    const { name, phone, password, aadhaarNumber } = req.body;
+    const { name, email, phone, password, aadhaarNumber } = req.body;
 
     // Check if volunteer already exists
-    const existingVolunteer = await Volunteer.findOne({ phone });
+    const existingVolunteer = await Volunteer.findOne({ email });
     if (existingVolunteer) {
-        throw ApiError.badRequest('An account with this phone number already exists');
+        throw ApiError.badRequest('An account with this email already exists');
     }
 
     // Encrypt and mask Aadhaar
@@ -65,6 +65,7 @@ const registerVolunteer = asyncHandler(async (req, res) => {
 
     const volunteer = await Volunteer.create({
         name,
+        email,
         phone,
         password,
         aadhaarEncrypted,
@@ -85,16 +86,16 @@ const registerVolunteer = asyncHandler(async (req, res) => {
  * @access  Public
  */
 const loginElder = asyncHandler(async (req, res) => {
-    const { phone, password } = req.body;
+    const { email, password } = req.body;
 
-    const elder = await Elder.findOne({ phone }).select('+password');
+    const elder = await Elder.findOne({ email }).select('+password');
     if (!elder) {
-        throw ApiError.unauthorized('Invalid phone number or password');
+        throw ApiError.unauthorized('Invalid email or password');
     }
 
     const isMatch = await elder.comparePassword(password);
     if (!isMatch) {
-        throw ApiError.unauthorized('Invalid phone number or password');
+        throw ApiError.unauthorized('Invalid email or password');
     }
 
     const token = generateToken(elder._id, 'elder');
@@ -111,16 +112,16 @@ const loginElder = asyncHandler(async (req, res) => {
  * @access  Public
  */
 const loginVolunteer = asyncHandler(async (req, res) => {
-    const { phone, password } = req.body;
+    const { email, password } = req.body;
 
-    const volunteer = await Volunteer.findOne({ phone }).select('+password');
+    const volunteer = await Volunteer.findOne({ email }).select('+password');
     if (!volunteer) {
-        throw ApiError.unauthorized('Invalid phone number or password');
+        throw ApiError.unauthorized('Invalid email or password');
     }
 
     const isMatch = await volunteer.comparePassword(password);
     if (!isMatch) {
-        throw ApiError.unauthorized('Invalid phone number or password');
+        throw ApiError.unauthorized('Invalid email or password');
     }
 
     const token = generateToken(volunteer._id, 'volunteer');
@@ -137,9 +138,9 @@ const loginVolunteer = asyncHandler(async (req, res) => {
  * @access  Public
  */
 const sendOTP = asyncHandler(async (req, res) => {
-    const { phone } = req.body;
-    const result = await otpService.sendPhoneOTP(phone);
-    return ApiResponse.success(res, result, 'OTP sent to your phone');
+    const { email } = req.body;
+    const result = await otpService.sendEmailOTP(email);
+    return ApiResponse.success(res, result, 'OTP sent to your email');
 });
 
 /**
@@ -148,27 +149,27 @@ const sendOTP = asyncHandler(async (req, res) => {
  * @access  Public
  */
 const verifyOTP = asyncHandler(async (req, res) => {
-    const { phone, otp } = req.body;
-    const result = await otpService.verifyPhoneOTP(phone, otp);
+    const { email, otp } = req.body;
+    const result = await otpService.verifyEmailOTP(email, otp);
 
     if (!result.success) {
         throw ApiError.badRequest(result.message);
     }
 
-    // Mark phone as verified for matched user
-    const elder = await Elder.findOne({ phone });
+    // Mark email as verified for matched user
+    const elder = await Elder.findOne({ email });
     if (elder) {
-        elder.phoneVerified = true;
+        elder.emailVerified = true;
         await elder.save();
     }
 
-    const volunteer = await Volunteer.findOne({ phone });
+    const volunteer = await Volunteer.findOne({ email });
     if (volunteer) {
-        volunteer.phoneVerified = true;
+        volunteer.emailVerified = true;
         await volunteer.save();
     }
 
-    return ApiResponse.success(res, null, 'Phone number verified successfully');
+    return ApiResponse.success(res, null, 'Email verified successfully');
 });
 
 /**

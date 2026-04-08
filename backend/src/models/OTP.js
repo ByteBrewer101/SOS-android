@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const otpSchema = new mongoose.Schema(
     {
-        phone: {
+        email: {
             type: String,
             required: true,
             trim: true,
@@ -13,7 +13,7 @@ const otpSchema = new mongoose.Schema(
         },
         type: {
             type: String,
-            enum: ['phone', 'aadhaar'],
+            enum: ['email', 'aadhaar'],
             required: true,
         },
         expiresAt: {
@@ -37,6 +37,6 @@ const otpSchema = new mongoose.Schema(
 );
 
 // Index for efficient OTP lookups
-otpSchema.index({ phone: 1, type: 1 });
+otpSchema.index({ email: 1, type: 1 });
 
 module.exports = mongoose.model('OTP', otpSchema);

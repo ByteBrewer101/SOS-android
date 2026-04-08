@@ -28,7 +28,7 @@ const triggerSOS = asyncHandler(async (req, res) => {
     const sosLog = await SOSLog.create({
         elderId: elder._id,
         elderName: elder.name,
-        elderPhone: elder.phone,
+        elderEmail: elder.email,
         emergencyContactName: elder.emergencyContactName,
         emergencyContactNumber: elder.emergencyContactNumber,
         latitude,
@@ -36,7 +36,7 @@ const triggerSOS = asyncHandler(async (req, res) => {
         locationLink,
     });
 
-    logger.info(`🚨 SOS triggered by ${elder.name} (${elder.phone}) at ${latitude}, ${longitude}`);
+    logger.info(`🚨 SOS triggered by ${elder.name} (${elder.email}) at ${latitude}, ${longitude}`);
 
     // 2. Send SMS to emergency contact
     const smsResult = await smsService.sendSOSAlert(
@@ -51,7 +51,7 @@ const triggerSOS = asyncHandler(async (req, res) => {
         elder.selectedVolunteers,
         {
             elderName: elder.name,
-            elderPhone: elder.phone,
+            elderEmail: elder.email,
             latitude,
             longitude,
             locationLink,

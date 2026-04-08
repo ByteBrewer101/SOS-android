@@ -3,7 +3,7 @@ const logger = require('../utils/logger');
 
 const connectDB = async () => {
     try {
-        const conn = await mongoose.connect(process.env.MONGODB_URI);
+        const conn = await mongoose.connect("mongodb://localhost:27017/sos_app");
         logger.info(`✅ MongoDB Connected: ${conn.connection.host}`);
     } catch (error) {
         logger.error(`❌ MongoDB Connection Error: ${error.message}`);

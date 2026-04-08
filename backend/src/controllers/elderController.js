@@ -10,7 +10,7 @@ const ApiResponse = require('../utils/ApiResponse');
  * @access  Private (Elder only)
  */
 const getProfile = asyncHandler(async (req, res) => {
-    const elder = await Elder.findById(req.user._id).populate('selectedVolunteers', 'name phone');
+    const elder = await Elder.findById(req.user._id).populate('selectedVolunteers', 'name email');
 
     if (!elder) {
         throw ApiError.notFound('Elder profile not found');
@@ -71,7 +71,7 @@ const updateDeviceToken = asyncHandler(async (req, res) => {
  */
 const getVolunteers = asyncHandler(async (req, res) => {
     const volunteers = await Volunteer.find({ isVerified: true })
-        .select('name phone')
+        .select('name email')
         .sort({ createdAt: -1 });
 
     return ApiResponse.success(res, { volunteers }, 'Volunteers retrieved successfully');
@@ -103,7 +103,7 @@ const selectVolunteers = asyncHandler(async (req, res) => {
         req.user._id,
         { selectedVolunteers: volunteerIds },
         { new: true }
-    ).populate('selectedVolunteers', 'name phone');
+    ).populate('selectedVolunteers', 'name email');
 
     return ApiResponse.success(res, { user: elder }, 'Volunteers selected successfully');
 });

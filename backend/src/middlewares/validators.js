@@ -23,12 +23,12 @@ const elderRegistrationRules = [
         .withMessage('Name is required')
         .isLength({ max: 100 })
         .withMessage('Name cannot exceed 100 characters'),
-    body('phone')
+    body('email')
         .trim()
         .notEmpty()
-        .withMessage('Phone number is required')
-        .matches(/^[6-9]\d{9}$/)
-        .withMessage('Please enter a valid 10-digit Indian phone number'),
+        .withMessage('Email address is required')
+        .isEmail()
+        .withMessage('Please enter a valid email address'),
     body('password')
         .notEmpty()
         .withMessage('Password is required')
@@ -58,12 +58,12 @@ const volunteerRegistrationRules = [
         .withMessage('Name is required')
         .isLength({ max: 100 })
         .withMessage('Name cannot exceed 100 characters'),
-    body('phone')
+    body('email')
         .trim()
         .notEmpty()
-        .withMessage('Phone number is required')
-        .matches(/^[6-9]\d{9}$/)
-        .withMessage('Please enter a valid 10-digit Indian phone number'),
+        .withMessage('Email address is required')
+        .isEmail()
+        .withMessage('Please enter a valid email address'),
     body('password')
         .notEmpty()
         .withMessage('Password is required')
@@ -81,12 +81,12 @@ const volunteerRegistrationRules = [
  * Validation rules for login
  */
 const loginRules = [
-    body('phone')
+    body('email')
         .trim()
         .notEmpty()
-        .withMessage('Phone number is required')
-        .matches(/^[6-9]\d{9}$/)
-        .withMessage('Please enter a valid 10-digit Indian phone number'),
+        .withMessage('Email address is required')
+        .isEmail()
+        .withMessage('Please enter a valid email address'),
     body('password').notEmpty().withMessage('Password is required'),
 ];
 
@@ -94,21 +94,21 @@ const loginRules = [
  * Validation rules for OTP
  */
 const otpSendRules = [
-    body('phone')
+    body('email')
         .trim()
         .notEmpty()
-        .withMessage('Phone number is required')
-        .matches(/^[6-9]\d{9}$/)
-        .withMessage('Please enter a valid 10-digit Indian phone number'),
+        .withMessage('Email address is required')
+        .isEmail()
+        .withMessage('Please enter a valid email address'),
 ];
 
 const otpVerifyRules = [
-    body('phone')
+    body('email')
         .trim()
         .notEmpty()
-        .withMessage('Phone number is required')
-        .matches(/^[6-9]\d{9}$/)
-        .withMessage('Please enter a valid 10-digit Indian phone number'),
+        .withMessage('Email address is required')
+        .isEmail()
+        .withMessage('Please enter a valid email address'),
     body('otp')
         .trim()
         .notEmpty()

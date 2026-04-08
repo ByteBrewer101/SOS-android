@@ -1,8 +1,20 @@
+const nodemailer = require('nodemailer');
 const OTP = require('../models/OTP');
 const logger = require('../utils/logger');
 
 const OTP_EXPIRY_MINUTES = 5;
 const MAX_ATTEMPTS = 5;
+
+// Configure NodeMailer transporter
+const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: process.env.SMTP_PORT || 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+        user: process.env.SMTP_USER || 'no-reply@sosapp.com', // Use your email
+        pass: process.env.SMTP_PASS || 'password123', // Use your password or app password
+    },
+});
 
 /**
  * Generate a 6-digit OTP
@@ -12,43 +24,55 @@ const generateOTP = () => {
 };
 
 /**
- * Send OTP via SMS
- * In production, integrate with SMS gateway (Twilio, MSG91, Fast2SMS, etc.)
+ * Send OTP via Email (Nodemailer)
  */
-const sendPhoneOTP = async (phone) => {
-    // Delete any existing OTP for this phone
-    await OTP.deleteMany({ phone, type: 'phone' });
+const sendEmailOTP = async (email) => {
+    // Delete any existing OTP for this email
+    await OTP.deleteMany({ email, type: 'email' });
 
     const otp = generateOTP();
     const expiresAt = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000);
 
     await OTP.create({
-        phone,
+        email,
         otp,
-        type: 'phone',
+        type: 'email',
         expiresAt,
     });
 
-    // TODO: Integrate with actual SMS gateway
-    // For development, log the OTP
-    logger.info(`📱 [DEV] Phone OTP for ${phone}: ${otp}`);
+    try {
+        // Send actual email using nodemailer
+        const mailOptions = {
+            from: `"SOS Emergency App" <${process.env.SMTP_USER || 'no-reply@sosapp.com'}>`,
+            to: email,
+            subject: 'Your SOS App Verification Code',
+            text: `Your SOS App verification code is: ${otp}. Valid for ${OTP_EXPIRY_MINUTES} minutes.`,
+            html: `<h3>Welcome to SOS Emergency App</h3>
+                   <p>Your verification code is: <strong>${otp}</strong></p>
+                   <p>This code is valid for ${OTP_EXPIRY_MINUTES} minutes.</p>`,
+        };
 
-    // Example SMS gateway integration:
-    // await smsGateway.send({
-    //   to: `+91${phone}`,
-    //   message: `Your SOS App verification code is: ${otp}. Valid for ${OTP_EXPIRY_MINUTES} minutes.`,
-    // });
+        if (process.env.SMTP_USER) {
+            await transporter.sendMail(mailOptions);
+            logger.info(`📧 Email OTP sent to ${email}`);
+        } else {
+            logger.info(`📧 [DEV - Nodemailer Setup missing] Email OTP for ${email}: ${otp}`);
+        }
+    } catch (error) {
+        logger.error(`Error sending email OTP to ${email}: ${error.message}`);
+        // Consider whether to throw or not. In dev we just logs.
+    }
 
-    return { message: 'OTP sent successfully', expiresInMinutes: OTP_EXPIRY_MINUTES };
+    return { message: 'OTP sent successfully to your email', expiresInMinutes: OTP_EXPIRY_MINUTES };
 };
 
 /**
- * Verify phone OTP
+ * Verify email OTP
  */
-const verifyPhoneOTP = async (phone, userOtp) => {
+const verifyEmailOTP = async (email, userOtp) => {
     const otpRecord = await OTP.findOne({
-        phone,
-        type: 'phone',
+        email,
+        type: 'email',
         verified: false,
     }).sort({ createdAt: -1 });
 
@@ -88,13 +112,13 @@ const verifyPhoneOTP = async (phone, userOtp) => {
  */
 const sendAadhaarOTP = async (aadhaarNumber) => {
     // Delete any existing Aadhaar OTP
-    await OTP.deleteMany({ phone: aadhaarNumber, type: 'aadhaar' });
+    await OTP.deleteMany({ email: aadhaarNumber, type: 'aadhaar' });
 
     const otp = generateOTP();
     const expiresAt = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000);
 
     await OTP.create({
-        phone: aadhaarNumber, // Using phone field to store aadhaar for OTP lookup
+        email: aadhaarNumber, // Using email field to store aadhaar for OTP lookup
         otp,
         type: 'aadhaar',
         expiresAt,
@@ -112,7 +136,7 @@ const sendAadhaarOTP = async (aadhaarNumber) => {
  */
 const verifyAadhaarOTP = async (aadhaarNumber, userOtp) => {
     const otpRecord = await OTP.findOne({
-        phone: aadhaarNumber,
+        email: aadhaarNumber,
         type: 'aadhaar',
         verified: false,
     }).sort({ createdAt: -1 });
@@ -148,8 +172,8 @@ const verifyAadhaarOTP = async (aadhaarNumber, userOtp) => {
 };
 
 module.exports = {
-    sendPhoneOTP,
-    verifyPhoneOTP,
+    sendEmailOTP,
+    verifyEmailOTP,
     sendAadhaarOTP,
     verifyAadhaarOTP,
     generateOTP,
