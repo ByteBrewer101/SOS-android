@@ -172,10 +172,10 @@ export default function ProfileScreen({ navigation }) {
                             onChangeText={setName}
                         />
 
-                        {/* Phone (read-only) */}
+                        {/* Email (read-only) */}
                         <ProfileField
-                            label="Phone Number"
-                            value={`+91 ${user?.phone || ''}`}
+                            label="Email Address"
+                            value={user?.email || ''}
                             editable={false}
                         />
 

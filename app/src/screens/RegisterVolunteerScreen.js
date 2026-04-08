@@ -25,6 +25,7 @@ export default function RegisterVolunteerScreen({ navigation }) {
     const { login } = useAuth();
 
     const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [aadhaarNumber, setAadhaarNumber] = useState('');
@@ -41,8 +42,12 @@ export default function RegisterVolunteerScreen({ navigation }) {
     }, []);
 
     const handleRegister = async () => {
-        if (!name.trim() || !phone.trim() || !password.trim() || !aadhaarNumber.trim()) {
+        if (!name.trim() || !email.trim() || !phone.trim() || !password.trim() || !aadhaarNumber.trim()) {
             Alert.alert('Missing Fields', 'Please fill in all fields.');
+            return;
+        }
+        if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+            Alert.alert('Invalid Email', 'Please enter a valid email address.');
             return;
         }
         if (!/^[6-9]\d{9}$/.test(phone.trim())) {
@@ -62,6 +67,7 @@ export default function RegisterVolunteerScreen({ navigation }) {
         try {
             const result = await registerVolunteer({
                 name: name.trim(),
+                email: email.trim(),
                 phone: phone.trim(),
                 password,
                 aadhaarNumber: aadhaarNumber.trim(),
@@ -125,6 +131,14 @@ export default function RegisterVolunteerScreen({ navigation }) {
                                 keyboardType="phone-pad"
                                 maxLength={10}
                                 prefix="+91"
+                            />
+                            <InputField
+                                label="Email Address"
+                                placeholder="Enter email address"
+                                value={email}
+                                onChangeText={setEmail}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
                             />
                             <InputField
                                 label="Password"

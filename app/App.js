@@ -18,6 +18,7 @@ import ElderHomeScreen from './src/screens/ElderHomeScreen';
 import VolunteerHomeScreen from './src/screens/VolunteerHomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import VolunteerSelectionScreen from './src/screens/VolunteerSelectionScreen';
+import OTPVerificationScreen from './src/screens/OTPVerificationScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -58,7 +59,7 @@ function VolunteerStack() {
 }
 
 function AppNavigator() {
-  const { isAuthenticated, isLoading, role } = useAuth();
+  const { isAuthenticated, isLoading, role, user } = useAuth();
 
   if (isLoading) {
     return (
@@ -74,6 +75,10 @@ function AppNavigator() {
       <StatusBar style="dark" />
       {!isAuthenticated ? (
         <AuthStack />
+      ) : !user?.emailVerified ? (
+        <Stack.Navigator screenOptions={screenOptions}>
+          <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} />
+        </Stack.Navigator>
       ) : role === 'elder' ? (
         <ElderStack />
       ) : (

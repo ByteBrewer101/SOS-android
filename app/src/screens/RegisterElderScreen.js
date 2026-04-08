@@ -25,7 +25,7 @@ export default function RegisterElderScreen({ navigation }) {
     const { login } = useAuth();
 
     const [name, setName] = useState('');
-    const [phone, setPhone] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emergencyContactName, setEmergencyContactName] = useState('');
     const [emergencyContactNumber, setEmergencyContactNumber] = useState('');
@@ -43,12 +43,12 @@ export default function RegisterElderScreen({ navigation }) {
 
     const handleRegister = async () => {
         // Validate
-        if (!name.trim() || !phone.trim() || !password.trim() || !emergencyContactName.trim() || !emergencyContactNumber.trim()) {
+        if (!name.trim() || !email.trim() || !password.trim() || !emergencyContactName.trim() || !emergencyContactNumber.trim()) {
             Alert.alert('Missing Fields', 'Please fill in all fields.');
             return;
         }
-        if (!/^[6-9]\d{9}$/.test(phone.trim())) {
-            Alert.alert('Invalid Phone', 'Please enter a valid 10-digit Indian phone number.');
+        if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+            Alert.alert('Invalid Email', 'Please enter a valid email address.');
             return;
         }
         if (!/^[6-9]\d{9}$/.test(emergencyContactNumber.trim())) {
@@ -64,7 +64,7 @@ export default function RegisterElderScreen({ navigation }) {
         try {
             const result = await registerElder({
                 name: name.trim(),
-                phone: phone.trim(),
+                email: email.trim(),
                 password,
                 emergencyContactName: emergencyContactName.trim(),
                 emergencyContactNumber: emergencyContactNumber.trim(),
@@ -121,13 +121,12 @@ export default function RegisterElderScreen({ navigation }) {
                                 autoCapitalize="words"
                             />
                             <InputField
-                                label="Phone Number"
-                                placeholder="Enter phone number"
-                                value={phone}
-                                onChangeText={setPhone}
-                                keyboardType="phone-pad"
-                                maxLength={10}
-                                prefix="+91"
+                                label="Email Address"
+                                placeholder="Enter email address"
+                                value={email}
+                                onChangeText={setEmail}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
                             />
                             <InputField
                                 label="Password"

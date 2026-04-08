@@ -58,31 +58,31 @@ export const registerVolunteer = async (body) => {
     });
 };
 
-export const loginElder = async (phone, password) => {
+export const loginElder = async (email, password) => {
     return apiRequest('/auth/elder/login', {
         method: 'POST',
-        body: JSON.stringify({ phone, password }),
+        body: JSON.stringify({ email, password }),
     });
 };
 
-export const loginVolunteer = async (phone, password) => {
+export const loginVolunteer = async (email, password) => {
     return apiRequest('/auth/volunteer/login', {
         method: 'POST',
-        body: JSON.stringify({ phone, password }),
+        body: JSON.stringify({ email, password }),
     });
 };
 
-export const sendOTP = async (phone) => {
+export const sendOTP = async (email) => {
     return apiRequest('/auth/send-otp', {
         method: 'POST',
-        body: JSON.stringify({ phone }),
+        body: JSON.stringify({ email }),
     });
 };
 
-export const verifyOTP = async (phone, otp) => {
+export const verifyOTP = async (email, otp) => {
     return apiRequest('/auth/verify-otp', {
         method: 'POST',
-        body: JSON.stringify({ phone, otp }),
+        body: JSON.stringify({ email, otp }),
     });
 };
 
