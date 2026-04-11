@@ -21,17 +21,23 @@ const generateToken = (id, role) => {
  * @access  Public
  */
 const registerElder = asyncHandler(async (req, res) => {
-    const { name, email, password, emergencyContactName, emergencyContactNumber } = req.body;
+    const { name, email, phone, password, emergencyContactName, emergencyContactNumber } = req.body;
 
     // Check if elder already exists
     const existingElder = await Elder.findOne({ email });
     if (existingElder) {
         throw ApiError.badRequest('An account with this email already exists');
     }
+    
+    const existingPhone = await Elder.findOne({ phone });
+    if (existingPhone) {
+        throw ApiError.badRequest('An account with this phone number already exists');
+    }
 
     const elder = await Elder.create({
         name,
         email,
+        phone,
         password,
         emergencyContactName,
         emergencyContactNumber,
@@ -57,6 +63,11 @@ const registerVolunteer = asyncHandler(async (req, res) => {
     const existingVolunteer = await Volunteer.findOne({ email });
     if (existingVolunteer) {
         throw ApiError.badRequest('An account with this email already exists');
+    }
+    
+    const existingPhone = await Volunteer.findOne({ phone });
+    if (existingPhone) {
+        throw ApiError.badRequest('An account with this phone number already exists');
     }
 
     // Encrypt and mask Aadhaar
@@ -86,16 +97,16 @@ const registerVolunteer = asyncHandler(async (req, res) => {
  * @access  Public
  */
 const loginElder = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+    const { phone, password } = req.body;
 
-    const elder = await Elder.findOne({ email }).select('+password');
+    const elder = await Elder.findOne({ phone }).select('+password');
     if (!elder) {
-        throw ApiError.unauthorized('Invalid email or password');
+        throw ApiError.unauthorized('Invalid phone number or password');
     }
 
     const isMatch = await elder.comparePassword(password);
     if (!isMatch) {
-        throw ApiError.unauthorized('Invalid email or password');
+        throw ApiError.unauthorized('Invalid phone number or password');
     }
 
     const token = generateToken(elder._id, 'elder');
@@ -112,16 +123,16 @@ const loginElder = asyncHandler(async (req, res) => {
  * @access  Public
  */
 const loginVolunteer = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+    const { phone, password } = req.body;
 
-    const volunteer = await Volunteer.findOne({ email }).select('+password');
+    const volunteer = await Volunteer.findOne({ phone }).select('+password');
     if (!volunteer) {
-        throw ApiError.unauthorized('Invalid email or password');
+        throw ApiError.unauthorized('Invalid phone number or password');
     }
 
     const isMatch = await volunteer.comparePassword(password);
     if (!isMatch) {
-        throw ApiError.unauthorized('Invalid email or password');
+        throw ApiError.unauthorized('Invalid phone number or password');
     }
 
     const token = generateToken(volunteer._id, 'volunteer');

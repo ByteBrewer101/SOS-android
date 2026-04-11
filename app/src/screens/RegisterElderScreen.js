@@ -26,6 +26,7 @@ export default function RegisterElderScreen({ navigation }) {
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [emergencyContactName, setEmergencyContactName] = useState('');
     const [emergencyContactNumber, setEmergencyContactNumber] = useState('');
@@ -43,12 +44,16 @@ export default function RegisterElderScreen({ navigation }) {
 
     const handleRegister = async () => {
         // Validate
-        if (!name.trim() || !email.trim() || !password.trim() || !emergencyContactName.trim() || !emergencyContactNumber.trim()) {
+        if (!name.trim() || !email.trim() || !phone.trim() || !password.trim() || !emergencyContactName.trim() || !emergencyContactNumber.trim()) {
             Alert.alert('Missing Fields', 'Please fill in all fields.');
             return;
         }
         if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
             Alert.alert('Invalid Email', 'Please enter a valid email address.');
+            return;
+        }
+        if (!/^[6-9]\d{9}$/.test(phone.trim())) {
+            Alert.alert('Invalid Phone', 'Please enter a valid 10-digit Indian phone number.');
             return;
         }
         if (!/^[6-9]\d{9}$/.test(emergencyContactNumber.trim())) {
@@ -65,6 +70,7 @@ export default function RegisterElderScreen({ navigation }) {
             const result = await registerElder({
                 name: name.trim(),
                 email: email.trim(),
+                phone: phone.trim(),
                 password,
                 emergencyContactName: emergencyContactName.trim(),
                 emergencyContactNumber: emergencyContactNumber.trim(),
@@ -127,6 +133,15 @@ export default function RegisterElderScreen({ navigation }) {
                                 onChangeText={setEmail}
                                 keyboardType="email-address"
                                 autoCapitalize="none"
+                            />
+                            <InputField
+                                label="Phone Number"
+                                placeholder="Enter phone number"
+                                value={phone}
+                                onChangeText={setPhone}
+                                keyboardType="phone-pad"
+                                maxLength={10}
+                                prefix="+91"
                             />
                             <InputField
                                 label="Password"

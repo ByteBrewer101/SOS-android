@@ -11,7 +11,7 @@ const sosLogSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        elderPhone: {
+        elderEmail: {
             type: String,
             required: true,
         },

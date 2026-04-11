@@ -8,7 +8,6 @@ import {
     TouchableOpacity,
     StyleSheet,
     Animated,
-    Alert,
     Dimensions,
     Linking,
     SafeAreaView,
@@ -99,19 +98,7 @@ export default function ElderHomeScreen({ navigation }) {
 
     const handleSOS = async () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-
-        Alert.alert(
-            '🚨 TRIGGER SOS?',
-            'This will send an emergency alert with your location to your emergency contact and all volunteers.',
-            [
-                { text: 'Cancel', style: 'cancel' },
-                {
-                    text: 'YES, SEND SOS',
-                    style: 'destructive',
-                    onPress: executeSOS,
-                },
-            ]
-        );
+        executeSOS();
     };
 
     const executeSOS = async () => {
@@ -123,11 +110,7 @@ export default function ElderHomeScreen({ navigation }) {
             // Get location
             const { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
-                Alert.alert(
-                    'Location Required',
-                    'Please enable location services to send your GPS coordinates in the SOS alert.',
-                    [{ text: 'OK' }]
-                );
+                console.log('Location permission denied');
                 setLoading(false);
                 setSOSActive(false);
                 return;
@@ -145,7 +128,7 @@ export default function ElderHomeScreen({ navigation }) {
             if (result.ok && result.data.success) {
                 Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
-                // Trigger native SMS
+                // Trigger native SMS silently
                 if (user?.emergencyContactNumber) {
                     try {
                         const isAvailable = await SMS.isAvailableAsync();
@@ -157,34 +140,11 @@ export default function ElderHomeScreen({ navigation }) {
                         console.log('SMS trigger error:', err);
                     }
                 }
-
-                Alert.alert(
-                    '✅ SOS Sent!',
-                    `Emergency alert sent.\n\nVolunteers notified: ${result.data.data.volunteersNotified}\nLocation shared with emergency contact.`,
-                    [{ text: 'OK' }]
-                );
-
-                // Prompt to call emergency contact
-                if (user?.emergencyContactNumber) {
-                    setTimeout(() => {
-                        Alert.alert(
-                            '📞 Call Emergency Contact?',
-                            `Would you like to call ${user.emergencyContactName || 'your emergency contact'}?`,
-                            [
-                                { text: 'No', style: 'cancel' },
-                                {
-                                    text: 'Call Now',
-                                    onPress: () => Linking.openURL(`tel:${user.emergencyContactNumber}`),
-                                },
-                            ]
-                        );
-                    }, 1500);
-                }
             } else {
-                Alert.alert('SOS Failed', result.data.message || 'Could not send SOS. Please try again.');
+                console.log('SOS failed:', result.data.message);
             }
         } catch (error) {
-            Alert.alert('Error', 'Failed to send SOS. Please try again.');
+            console.log('SOS error:', error);
         } finally {
             setLoading(false);
             setSOSActive(false);

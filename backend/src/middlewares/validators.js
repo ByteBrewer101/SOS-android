@@ -29,6 +29,12 @@ const elderRegistrationRules = [
         .withMessage('Email address is required')
         .isEmail()
         .withMessage('Please enter a valid email address'),
+    body('phone')
+        .trim()
+        .notEmpty()
+        .withMessage('Phone number is required')
+        .matches(/^[6-9]\d{9}$/)
+        .withMessage('Please enter a valid 10-digit Indian phone number'),
     body('password')
         .notEmpty()
         .withMessage('Password is required')
@@ -81,12 +87,12 @@ const volunteerRegistrationRules = [
  * Validation rules for login
  */
 const loginRules = [
-    body('email')
+    body('phone')
         .trim()
         .notEmpty()
-        .withMessage('Email address is required')
-        .isEmail()
-        .withMessage('Please enter a valid email address'),
+        .withMessage('Phone number is required')
+        .matches(/^[6-9]\d{9}$/)
+        .withMessage('Please enter a valid 10-digit Indian phone number'),
     body('password').notEmpty().withMessage('Password is required'),
 ];
 

@@ -58,17 +58,17 @@ export const registerVolunteer = async (body) => {
     });
 };
 
-export const loginElder = async (email, password) => {
+export const loginElder = async (phone, password) => {
     return apiRequest('/auth/elder/login', {
         method: 'POST',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ phone, password }),
     });
 };
 
-export const loginVolunteer = async (email, password) => {
+export const loginVolunteer = async (phone, password) => {
     return apiRequest('/auth/volunteer/login', {
         method: 'POST',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ phone, password }),
     });
 };
 

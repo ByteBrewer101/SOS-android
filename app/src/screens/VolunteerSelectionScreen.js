@@ -1,6 +1,6 @@
 /**
  * Volunteer Selection Screen
- * Screen for Elders to pick at least 2 volunteers to be notified during an SOS.
+ * Screen for Elders to pick at least 1 volunteer to be notified during an SOS.
  */
 import React, { useState, useEffect, useRef } from 'react';
 import {
@@ -20,7 +20,7 @@ import { useAuth } from '../context/AuthContext';
 import { getAvailableVolunteers, selectVolunteers } from '../services/api';
 
 export default function VolunteerSelectionScreen({ navigation }) {
-    const { user, updateUser } = useAuth();
+    const { user, updateUser, logout } = useAuth();
     const [volunteers, setVolunteers] = useState([]);
     const [selectedIds, setSelectedIds] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -35,9 +35,7 @@ export default function VolunteerSelectionScreen({ navigation }) {
             useNativeDriver: true,
         }).start();
 
-        // If user already has selected volunteers, pre-select them
         if (user?.selectedVolunteers && Array.isArray(user.selectedVolunteers)) {
-            // populate returns objects with _id, handle string ids or object
             const ids = user.selectedVolunteers.map(v => typeof v === 'string' ? v : v._id);
             setSelectedIds(ids);
         }
@@ -70,8 +68,8 @@ export default function VolunteerSelectionScreen({ navigation }) {
     };
 
     const handleSave = async () => {
-        if (selectedIds.length < 2) {
-            Alert.alert('Selection Required', 'You must select at least 2 volunteers to receive your SOS alerts.');
+        if (selectedIds.length < 1) {
+            Alert.alert('Selection Required', 'Please select at least 1 volunteer to receive your SOS alerts.');
             return;
         }
 
@@ -79,7 +77,6 @@ export default function VolunteerSelectionScreen({ navigation }) {
         try {
             const result = await selectVolunteers(selectedIds);
             if (result.ok && result.data.success) {
-                // Update user state using updateUser so next check sees the updated volunteers
                 updateUser(result.data.data.user);
                 Alert.alert('Success', 'Your emergency volunteers have been saved.', [
                     { text: 'OK', onPress: () => navigation.replace('ElderHome') }
@@ -93,6 +90,21 @@ export default function VolunteerSelectionScreen({ navigation }) {
         } finally {
             setSaving(false);
         }
+    };
+
+    const handleLogout = () => {
+        Alert.alert(
+            'Logout',
+            'Are you sure you want to logout?',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                    text: 'Logout',
+                    style: 'destructive',
+                    onPress: async () => await logout(),
+                },
+            ]
+        );
     };
 
     const renderItem = ({ item }) => {
@@ -118,8 +130,7 @@ export default function VolunteerSelectionScreen({ navigation }) {
 
     const ListHeader = () => (
         <View style={styles.header}>
-            {/* Back button — only show if user already has selected volunteers */}
-            {user?.selectedVolunteers && user.selectedVolunteers.length >= 2 && (
+            {user?.selectedVolunteers && user.selectedVolunteers.length >= 1 && (
                 <TouchableOpacity
                     style={styles.backButton}
                     onPress={() => navigation.goBack()}
@@ -131,11 +142,11 @@ export default function VolunteerSelectionScreen({ navigation }) {
             )}
             <Text style={styles.title}>Select Volunteers</Text>
             <Text style={styles.subtitle}>
-                Choose at least 2 volunteers who will be notified when you trigger an SOS.
+                Choose at least 1 volunteer who will be notified when you trigger an SOS.
             </Text>
             <View style={styles.counterBadge}>
                 <Text style={styles.counterText}>
-                    Selected: {selectedIds.length} / 2 Minimum
+                    Selected: {selectedIds.length}
                 </Text>
             </View>
         </View>
@@ -166,25 +177,35 @@ export default function VolunteerSelectionScreen({ navigation }) {
                     }
                 />
 
-                {/* Footer actions */}
                 <View style={styles.footer}>
+                    {/* Save button */}
                     <TouchableOpacity
                         activeOpacity={0.85}
                         onPress={handleSave}
-                        disabled={saving || selectedIds.length < 2}
+                        disabled={saving || selectedIds.length < 1}
                     >
                         <LinearGradient
-                            colors={selectedIds.length >= 2 ? COLORS.gradientAccent : [COLORS.bgElevated, COLORS.bgElevated]}
+                            colors={selectedIds.length >= 1 ? COLORS.gradientAccent : [COLORS.bgElevated, COLORS.bgElevated]}
                             style={styles.saveButton}
                         >
                             {saving ? (
                                 <ActivityIndicator color="#fff" size="small" />
                             ) : (
-                                <Text style={[styles.saveButtonText, selectedIds.length < 2 && { color: COLORS.textMuted }]}>
-                                    {selectedIds.length < 2 ? 'Select at least 2' : 'Save Selection'}
+                                <Text style={[styles.saveButtonText, selectedIds.length < 1 && { color: COLORS.textMuted }]}>
+                                    {selectedIds.length < 1 ? 'Select at least 1' : 'Save Selection'}
                                 </Text>
                             )}
                         </LinearGradient>
+                    </TouchableOpacity>
+
+                    {/* Logout button */}
+                    <TouchableOpacity
+                        style={styles.logoutButton}
+                        onPress={handleLogout}
+                        activeOpacity={0.7}
+                    >
+                        <Ionicons name="log-out-outline" size={20} color={COLORS.error || '#E74C3C'} />
+                        <Text style={styles.logoutText}>Logout</Text>
                     </TouchableOpacity>
                 </View>
             </Animated.View>
@@ -204,7 +225,7 @@ const styles = StyleSheet.create({
     listContent: {
         paddingHorizontal: SPACING.xxl,
         paddingTop: 60,
-        paddingBottom: 120, // space for fixed footer
+        paddingBottom: 160, // space for footer with two buttons
     },
     header: {
         alignItems: 'center',
@@ -319,5 +340,18 @@ const styles = StyleSheet.create({
         fontSize: FONTS.sizes.lg,
         fontWeight: FONTS.weights.bold,
         color: '#FFFFFF',
+    },
+    logoutButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: SPACING.sm,
+        paddingVertical: SPACING.md,
+        marginTop: SPACING.sm,
+    },
+    logoutText: {
+        fontSize: FONTS.sizes.md,
+        color: COLORS.error || '#E74C3C',
+        fontWeight: FONTS.weights.medium,
     },
 });

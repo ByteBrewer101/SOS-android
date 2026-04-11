@@ -16,7 +16,7 @@ const sendToDevice = async (deviceToken, title, body, data = {}) => {
  * - Falls back to stub logging for push notifications (Firebase disabled)
  */
 const broadcastSOSAlert = async (selectedVolunteerIds, sosData) => {
-    const { elderName, elderPhone, latitude, longitude, locationLink } = sosData;
+    const { elderName, elderEmail, latitude, longitude, locationLink } = sosData;
 
     // Find verified volunteers from the selected list
     const volunteers = await Volunteer.find({
@@ -33,7 +33,7 @@ const broadcastSOSAlert = async (selectedVolunteerIds, sosData) => {
     const ssePayload = {
         type: 'sos_alert',
         elderName,
-        elderPhone,
+        elderEmail,
         latitude,
         longitude,
         locationLink,
@@ -47,7 +47,7 @@ const broadcastSOSAlert = async (selectedVolunteerIds, sosData) => {
     );
 
     logger.info(`📢 SSE real-time notification sent to ${sseNotified} connected volunteers`);
-    logger.info(`📢 Elder: ${elderName} (${elderPhone}) at ${latitude}, ${longitude}`);
+    logger.info(`📢 Elder: ${elderName} (${elderEmail}) at ${latitude}, ${longitude}`);
     logger.info(`📢 Location: ${locationLink}`);
 
     return {

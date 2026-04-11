@@ -221,7 +221,7 @@ export default function VolunteerHomeScreen({ navigation }) {
                 <View style={styles.alertBody}>
                     <View style={styles.alertInfo}>
                         <Text style={styles.alertName}>{item.elderName}</Text>
-                        <Text style={styles.alertPhone}>+91 {item.elderPhone}</Text>
+                        <Text style={styles.alertPhone}>{item.elderEmail}</Text>
                     </View>
                 </View>
 
@@ -237,10 +237,10 @@ export default function VolunteerHomeScreen({ navigation }) {
                     <TouchableOpacity
                         style={styles.actionButton}
                         activeOpacity={0.7}
-                        onPress={() => Linking.openURL(`tel:${item.elderPhone}`)}
+                        onPress={() => Linking.openURL(`mailto:${item.elderEmail}`)}
                     >
                         <View style={styles.actionGradientCall}>
-                            <Text style={styles.actionText}>Call</Text>
+                            <Text style={styles.actionText}>Email</Text>
                         </View>
                     </TouchableOpacity>
 
@@ -385,16 +385,16 @@ export default function VolunteerHomeScreen({ navigation }) {
                             </TouchableOpacity>
                         </View>
                         <Text style={styles.notifName}>{notification.elderName} needs help!</Text>
-                        <Text style={styles.notifPhone}>+91 {notification.elderPhone}</Text>
+                        <Text style={styles.notifPhone}>{notification.elderEmail}</Text>
                         <View style={styles.notifActions}>
                             <TouchableOpacity
                                 style={styles.notifCallBtn}
                                 onPress={() => {
                                     dismissNotification();
-                                    Linking.openURL(`tel:${notification.elderPhone}`);
+                                    Linking.openURL(`mailto:${notification.elderEmail}`);
                                 }}
                             >
-                                <Text style={styles.notifCallText}>📞 Call Now</Text>
+                                <Text style={styles.notifCallText}>✉️ Email Now</Text>
                             </TouchableOpacity>
                             {notification.locationLink && (
                                 <TouchableOpacity
