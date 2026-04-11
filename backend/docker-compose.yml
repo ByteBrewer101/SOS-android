@@ -1,3 +1,13 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+#  SOS Backend — Docker Compose (Production)
+#
+#  Usage:
+#    1. Copy .env.example → .env   and fill in your values
+#    2. docker compose up -d --build
+#
+#  All configuration is read from .env — no values to change in this file.
+# ═══════════════════════════════════════════════════════════════════════════════
+
 services:
 
   # ─── MongoDB ──────────────────────────────────────────────────────────────
@@ -8,15 +18,18 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME:-sos_app}
     volumes:
-      # Persistent data — survives container restarts and upgrades
       - mongo_data:/data/db
       - mongo_config:/data/configdb
     networks:
       - sos_internal
-    # MongoDB is NOT exposed to the host; only reachable inside the Docker network
-    # (the backend reaches it via the service name "mongo")
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
 
   # ─── Node.js API ──────────────────────────────────────────────────────────
   api:
@@ -27,46 +40,51 @@ services:
     container_name: sos_api
     restart: always
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
     environment:
       NODE_ENV: production
       PORT: 5000
 
-      # MongoDB — uses the internal service hostname "mongo" + credentials
-      MONGODB_URI: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DB_NAME}?authSource=admin
+      # ── MongoDB (built from individual vars — user doesn't craft this) ──
+      MONGODB_URI: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DB_NAME:-sos_app}?authSource=admin
 
-      # Auth
+      # ── JWT ──
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-30d}
 
-      # Aadhaar encryption (must be exactly 32 chars for AES-256)
+      # ── Aadhaar encryption (must be exactly 32 chars for AES-256) ──
       AADHAAR_ENCRYPTION_KEY: ${AADHAAR_ENCRYPTION_KEY}
 
-      # CORS — set to your frontend domain in production
+      # ── CORS ──
       CORS_ORIGIN: ${CORS_ORIGIN:-*}
 
-      # Rate limiting
+      # ── Rate Limiting ──
       RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:-900000}
       RATE_LIMIT_MAX_REQUESTS: ${RATE_LIMIT_MAX_REQUESTS:-100}
 
-      # Optional: SMS & Firebase (leave blank to keep stubbed)
+      # ── SMTP (Email OTP via Nodemailer) ──
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+
+      # ── SMS (optional — leave blank to keep stubbed) ──
       SMS_API_KEY: ${SMS_API_KEY:-}
       SMS_SENDER_ID: ${SMS_SENDER_ID:-SOSAPP}
+
+      # ── Firebase FCM (optional — leave blank to keep stubbed) ──
       FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID:-}
       FIREBASE_CLIENT_EMAIL: ${FIREBASE_CLIENT_EMAIL:-}
       FIREBASE_PRIVATE_KEY: ${FIREBASE_PRIVATE_KEY:-}
 
     ports:
-      # Map host port → container port.
-      # Put Nginx/Caddy in front of this on the VPS and only bind 127.0.0.1
-      # so port 5000 is NOT directly reachable from the internet:
-      #   ports: ["127.0.0.1:5000:5000"]
-      - "5000:5000"
+      - "${API_PORT:-5000}:5000"
 
     networks:
       - sos_internal
 
-    # Keep SSE connections alive — prevent Docker's proxy from cutting idle streams
+    # Keep SSE connections alive — prevent Docker proxy from cutting idle streams
     sysctls:
       net.ipv4.tcp_keepalive_time: 60
 

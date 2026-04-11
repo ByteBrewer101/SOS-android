@@ -52,15 +52,15 @@ const sendEmailOTP = async (email) => {
                    <p>This code is valid for ${OTP_EXPIRY_MINUTES} minutes.</p>`,
         };
 
-        if (process.env.SMTP_USER) {
+        if (process.env.SMTP_USER && !process.env.SMTP_USER.includes('your_email')) {
             await transporter.sendMail(mailOptions);
             logger.info(`📧 Email OTP sent to ${email}`);
         } else {
-            logger.info(`📧 [DEV - Nodemailer Setup missing] Email OTP for ${email}: ${otp}`);
+            logger.info(`📧 [DEV - Real Email Setup Pending] Email OTP for ${email}: ${otp}`);
         }
     } catch (error) {
         logger.error(`Error sending email OTP to ${email}: ${error.message}`);
-        // Consider whether to throw or not. In dev we just logs.
+        // In local development, we don't throw to allow testing OTP easily via console logs.
     }
 
     return { message: 'OTP sent successfully to your email', expiresInMinutes: OTP_EXPIRY_MINUTES };

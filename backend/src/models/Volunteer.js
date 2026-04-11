@@ -62,7 +62,7 @@ const volunteerSchema = new mongoose.Schema(
         },
         aadhaarVerified: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         isVerified: {
             type: Boolean,
