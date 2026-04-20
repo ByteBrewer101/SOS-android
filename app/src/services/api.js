@@ -100,6 +100,27 @@ export const verifyAadhaarOTP = async (aadhaarNumber, otp) => {
     });
 };
 
+export const forgotPasswordRequest = async (email) => {
+    return apiRequest('/auth/forgot-password', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+    });
+};
+
+export const verifyForgotPasswordOTP = async (email, otp) => {
+    return apiRequest('/auth/forgot-password/verify-otp', {
+        method: 'POST',
+        body: JSON.stringify({ email, otp }),
+    });
+};
+
+export const resetPassword = async (email, newPassword) => {
+    return apiRequest('/auth/forgot-password/reset', {
+        method: 'POST',
+        body: JSON.stringify({ email, newPassword }),
+    });
+};
+
 // ─── Elder APIs ────────────────────────────────────────────────────────
 
 export const getElderProfile = async () => {

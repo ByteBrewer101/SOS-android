@@ -11,6 +11,9 @@ const {
     otpVerifyRules,
     aadhaarOtpSendRules,
     aadhaarOtpVerifyRules,
+    forgotPasswordRequestRules,
+    forgotPasswordVerifyRules,
+    resetPasswordRules,
 } = require('../middlewares/validators');
 
 /**
@@ -289,5 +292,89 @@ router.post(
     validate,
     authController.verifyAadhaarOTP
 );
+
+/**
+ * @swagger
+ * /auth/forgot-password:
+ *   post:
+ *     summary: Request a password reset OTP (sent to registered email)
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: "user@example.com"
+ *     responses:
+ *       200:
+ *         description: OTP sent if email is registered
+ */
+router.post('/forgot-password', forgotPasswordRequestRules, validate, authController.forgotPasswordRequest);
+
+/**
+ * @swagger
+ * /auth/forgot-password/verify-otp:
+ *   post:
+ *     summary: Verify the password reset OTP
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - otp
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: "user@example.com"
+ *               otp:
+ *                 type: string
+ *                 example: "123456"
+ *     responses:
+ *       200:
+ *         description: OTP verified successfully
+ *       400:
+ *         description: Invalid or expired OTP
+ */
+router.post('/forgot-password/verify-otp', forgotPasswordVerifyRules, validate, authController.verifyForgotPasswordOTP);
+
+/**
+ * @swagger
+ * /auth/forgot-password/reset:
+ *   post:
+ *     summary: Reset password after OTP verification
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - newPassword
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: "user@example.com"
+ *               newPassword:
+ *                 type: string
+ *                 example: "newpassword123"
+ *     responses:
+ *       200:
+ *         description: Password reset successfully
+ *       400:
+ *         description: OTP not verified or session expired
+ */
+router.post('/forgot-password/reset', resetPasswordRules, validate, authController.resetPassword);
 
 module.exports = router;

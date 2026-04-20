@@ -201,6 +201,55 @@ const deviceTokenRules = [
         .withMessage('Device token is required'),
 ];
 
+/**
+ * Validation rules for forgot password — Step 1: request OTP
+ */
+const forgotPasswordRequestRules = [
+    body('email')
+        .trim()
+        .notEmpty()
+        .withMessage('Email address is required')
+        .isEmail()
+        .withMessage('Please enter a valid email address'),
+];
+
+/**
+ * Validation rules for forgot password — Step 2: verify OTP
+ */
+const forgotPasswordVerifyRules = [
+    body('email')
+        .trim()
+        .notEmpty()
+        .withMessage('Email address is required')
+        .isEmail()
+        .withMessage('Please enter a valid email address'),
+    body('otp')
+        .trim()
+        .notEmpty()
+        .withMessage('OTP is required')
+        .isLength({ min: 6, max: 6 })
+        .withMessage('OTP must be 6 digits')
+        .isNumeric()
+        .withMessage('OTP must be numeric'),
+];
+
+/**
+ * Validation rules for forgot password — Step 3: reset password
+ */
+const resetPasswordRules = [
+    body('email')
+        .trim()
+        .notEmpty()
+        .withMessage('Email address is required')
+        .isEmail()
+        .withMessage('Please enter a valid email address'),
+    body('newPassword')
+        .notEmpty()
+        .withMessage('New password is required')
+        .isLength({ min: 6 })
+        .withMessage('Password must be at least 6 characters'),
+];
+
 module.exports = {
     validate,
     elderRegistrationRules,
@@ -213,4 +262,7 @@ module.exports = {
     sosTriggerRules,
     elderProfileUpdateRules,
     deviceTokenRules,
+    forgotPasswordRequestRules,
+    forgotPasswordVerifyRules,
+    resetPasswordRules,
 };

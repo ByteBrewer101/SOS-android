@@ -13,7 +13,7 @@ const otpSchema = new mongoose.Schema(
         },
         type: {
             type: String,
-            enum: ['email', 'aadhaar'],
+            enum: ['email', 'aadhaar', 'forgot_password'],
             required: true,
         },
         expiresAt: {

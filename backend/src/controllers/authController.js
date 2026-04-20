@@ -218,6 +218,84 @@ const verifyAadhaarOTP = asyncHandler(async (req, res) => {
     return ApiResponse.success(res, { isVerified: true }, 'Aadhaar verified. Your account is now active.');
 });
 
+/**
+ * @desc    Request OTP for password reset (forgot password)
+ * @route   POST /api/auth/forgot-password
+ * @access  Public
+ */
+const forgotPasswordRequest = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    const result = await otpService.sendForgotPasswordOTP(email);
+    return ApiResponse.success(res, { expiresInMinutes: result.expiresInMinutes }, result.message);
+});
+
+/**
+ * @desc    Verify OTP for password reset
+ * @route   POST /api/auth/forgot-password/verify-otp
+ * @access  Public
+ */
+const verifyForgotPasswordOTP = asyncHandler(async (req, res) => {
+    const { email, otp } = req.body;
+    const result = await otpService.verifyForgotPasswordOTP(email, otp);
+
+    if (!result.success) {
+        throw ApiError.badRequest(result.message);
+    }
+
+    return ApiResponse.success(res, null, result.message);
+});
+
+/**
+ * @desc    Reset password after OTP verification
+ * @route   POST /api/auth/forgot-password/reset
+ * @access  Public
+ */
+const resetPassword = asyncHandler(async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+
+    // Re-verify OTP is still valid and verified at this step
+    const otpRecord = await require('../models/OTP').findOne({
+        email,
+        type: 'forgot_password',
+        verified: true,
+    }).sort({ createdAt: -1 });
+
+    if (!otpRecord) {
+        throw ApiError.badRequest('OTP not verified. Please complete OTP verification first.');
+    }
+
+    if (otpRecord.expiresAt < new Date()) {
+        await otpRecord.deleteOne();
+        throw ApiError.badRequest('Session expired. Please start over.');
+    }
+
+    // Update password for whichever user type holds this email
+    let updated = false;
+
+    const elder = await Elder.findOne({ email }).select('+password');
+    if (elder) {
+        elder.password = newPassword;
+        await elder.save();
+        updated = true;
+    }
+
+    const volunteer = await Volunteer.findOne({ email }).select('+password');
+    if (volunteer) {
+        volunteer.password = newPassword;
+        await volunteer.save();
+        updated = true;
+    }
+
+    if (!updated) {
+        throw ApiError.notFound('No account found with this email.');
+    }
+
+    // Invalidate the OTP record after successful password reset
+    await otpRecord.deleteOne();
+
+    return ApiResponse.success(res, null, 'Password reset successfully. You can now log in with your new password.');
+});
+
 module.exports = {
     registerElder,
     registerVolunteer,
@@ -227,4 +305,7 @@ module.exports = {
     verifyOTP,
     sendAadhaarOTP,
     verifyAadhaarOTP,
+    forgotPasswordRequest,
+    verifyForgotPasswordOTP,
+    resetPassword,
 };

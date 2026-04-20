@@ -19,6 +19,7 @@ import * as Location from 'expo-location';
 import * as Haptics from 'expo-haptics';
 import * as SMS from 'expo-sms';
 import { Ionicons } from '@expo/vector-icons';
+import { Audio } from 'expo-av';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../theme';
 import { useAuth } from '../context/AuthContext';
 import { triggerSOS } from '../services/api';
@@ -30,11 +31,13 @@ export default function ElderHomeScreen({ navigation }) {
     const { user, logout } = useAuth();
     const [sosActive, setSOSActive] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [isAlarmActive, setIsAlarmActive] = useState(false);
 
     // Animations
     const pulseAnim = useRef(new Animated.Value(1)).current;
     const glowAnim = useRef(new Animated.Value(0.3)).current;
     const fadeAnim = useRef(new Animated.Value(0)).current; // optional, could be used for entrance
+    const soundRef = useRef(null);
 
     // Check volunteer selection status on focus
     useFocusEffect(
@@ -90,14 +93,70 @@ export default function ElderHomeScreen({ navigation }) {
         );
         glowLoop.start();
 
+        // Pre-load sound
+        const loadSound = async () => {
+            try {
+                await Audio.setAudioModeAsync({
+                    allowsRecordingIOS: false,
+                    playsInSilentModeIOS: true,
+                    shouldDuckAndroid: true,
+                    staysActiveInBackground: true,
+                    playThroughEarpieceAndroid: false,
+                });
+
+                const { sound } = await Audio.Sound.createAsync(
+                    require('../../assets/ringtone.mp3'),
+                    { shouldPlay: false, isLooping: true }
+                );
+                soundRef.current = sound;
+            } catch (error) {
+                console.log('Error loading sound:', error);
+            }
+        };
+        loadSound();
+
         return () => {
             pulseLoop.stop();
             glowLoop.stop();
+            if (soundRef.current) {
+                soundRef.current.unloadAsync();
+            }
         };
     }, []);
 
+    const playSound = async () => {
+        try {
+            if (soundRef.current) {
+                await soundRef.current.playAsync();
+            } else {
+                // Fallback if not loaded yet
+                const { sound } = await Audio.Sound.createAsync(
+                    require('../../assets/ringtone.mp3'),
+                    { shouldPlay: true, isLooping: true }
+                );
+                soundRef.current = sound;
+            }
+        } catch (error) {
+            console.log('Error playing sound:', error);
+        }
+    };
+
+    const stopSound = async () => {
+        try {
+            if (soundRef.current) {
+                await soundRef.current.stopAsync();
+            }
+            setIsAlarmActive(false);
+        } catch (error) {
+            console.log('Error stopping sound:', error);
+        }
+    };
+
     const handleSOS = async () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+        if (loading || isAlarmActive) return;
+        setIsAlarmActive(true);
+        playSound();
         executeSOS();
     };
 
@@ -148,6 +207,7 @@ export default function ElderHomeScreen({ navigation }) {
         } finally {
             setLoading(false);
             setSOSActive(false);
+            // Alarm continues until manually silenced
         }
     };
 
@@ -181,7 +241,6 @@ export default function ElderHomeScreen({ navigation }) {
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 onPress={handleSOS}
-                                disabled={loading}
                             >
                                 <LinearGradient
                                     colors={sosActive ? ['#9B2C2C', '#742A2A'] : COLORS.gradientSOS}
@@ -193,12 +252,26 @@ export default function ElderHomeScreen({ navigation }) {
                                         {loading ? 'SENDING...' : 'SOS'}
                                     </Text>
                                     <Text style={styles.sosSubtext}>
-                                        {loading ? 'Please wait' : 'Tap for emergency'}
+                                        {loading ? 'SOS SENDING...' : 'Tap for emergency'}
                                     </Text>
                                 </LinearGradient>
                             </TouchableOpacity>
                         </Animated.View>
                     </View>
+
+                    {/* Silence Alarm Button Section */}
+                    {isAlarmActive && (
+                        <View style={styles.alarmControl}>
+                            <TouchableOpacity
+                                style={styles.silenceButton}
+                                onPress={stopSound}
+                                activeOpacity={0.7}
+                            >
+                                <Ionicons name="volume-mute" size={24} color="#FFFFFF" />
+                                <Text style={styles.silenceText}>STOP EMERGENCY ALARM</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
 
                     {/* Emergency Contact Info at Bottom */}
                     {user?.emergencyContactNumber && (
@@ -320,4 +393,26 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     callText: { fontSize: FONTS.sizes.xs, color: '#FFFFFF', fontWeight: FONTS.weights.bold },
+    alarmControl: {
+        paddingHorizontal: SPACING.xxl,
+        marginBottom: SPACING.lg,
+    },
+    silenceButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: COLORS.navy, // Different color than SOS
+        paddingVertical: SPACING.lg,
+        borderRadius: RADIUS.lg,
+        gap: SPACING.md,
+        ...SHADOWS.card,
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.1)',
+    },
+    silenceText: {
+        fontSize: FONTS.sizes.md,
+        color: '#FFFFFF',
+        fontWeight: FONTS.weights.bold,
+        letterSpacing: 1.5,
+    },
 });

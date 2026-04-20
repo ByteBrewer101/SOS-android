@@ -19,6 +19,7 @@ import VolunteerHomeScreen from './src/screens/VolunteerHomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import VolunteerSelectionScreen from './src/screens/VolunteerSelectionScreen';
 import OTPVerificationScreen from './src/screens/OTPVerificationScreen';
+import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +36,7 @@ function AuthStack() {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="RegisterElder" component={RegisterElderScreen} />
       <Stack.Screen name="RegisterVolunteer" component={RegisterVolunteerScreen} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     </Stack.Navigator>
   );
 }
